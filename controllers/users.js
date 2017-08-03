@@ -1,12 +1,12 @@
 var passport = require("passport")
 
 // GET /signup
-function getSignup(request, response) {
-  response.render('signup.ejs', { message: request.flash('signupMessage') });
+function getSignup(req, res) {
+  res.render('signup.ejs', { message: req.flash('signupMessage') });
 }
 
 // POST /signup
-function postSignup(request, response, next) {
+function postSignup(req, res, next) {
 	console.log("postSignup");
     var signupStrategy = passport.authenticate('local-signup', {
       successRedirect : '/',
@@ -14,32 +14,37 @@ function postSignup(request, response, next) {
       failureFlash : true
     });
 
-    return signupStrategy(request, response, next);
+    return signupStrategy(req, res, next);
 }
 
 // GET /login
-function getLogin(request, response) { 
-  response.render('login.ejs', { message: request.flash('loginMessage') });
+function getLogin(req, res) { 
+  res.render('login.ejs', { message: req.flash('loginMessage') });
 }
 
 // POST /login 
-function postLogin(request, response, next) {
+function postLogin(req, res, next) {
   var loginProperty = passport.authenticate('local-login', {
     successRedirect: '/',
     failureRedirect: '/login',
     failureFlash: true
   });
-  return loginProperty(request, response, next);
+  return loginProperty(req, res, next);
 }
 
 // GET /logout
-function getLogout(request, response) {
-  request.logout();
-  response.redirect('/');
+function getLogout(req, res) {
+  req.logout();
+  res.redirect('/');
 }
 
-// Restricted page
-function secret(request, response){
+// Authorized User page
+function authorized(req, res){
+  // If the user is authenticated, then we continue the execution
+    if (req.isAuthenticated()) return next();
+
+    // Otherwise the request is always redirected to the home page
+    res.redirect('/');
 }
 
 module.exports = {
@@ -48,5 +53,5 @@ module.exports = {
   getSignup: getSignup,
   postSignup: postSignup,
   getLogout: getLogout,
-  secret: secret
+  authorized: authorized
 }

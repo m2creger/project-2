@@ -10,8 +10,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser   = require('body-parser');
 var session      = require('express-session');
 
-
-mongoose.connect('mongodb://localhost/local-authentication-with-passport'); 
+var db = require("./models")
 
 app.use(morgan('dev')); 
 app.use(cookieParser());
@@ -37,4 +36,6 @@ app.use(function (req, res, next) {
 var routes = require('./config/routes');
 app.use(routes);
 
-app.listen(3000);
+app.listen(process.env.PORT || 3000, function () {
+  console.log('Express server is up and running on http://localhost:3000/');
+});
