@@ -1,14 +1,17 @@
 
 // Server setup
-var express      = require('express');
-var app          = express();
-var mongoose     = require('mongoose');
-var passport     = require('passport');
-var flash        = require('connect-flash');
-var morgan       = require('morgan');
+var express = require('express');
+var app = express();
+var mongoose = require('mongoose');
+var passport = require('passport');
+var flash = require('connect-flash');
+var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
-var bodyParser   = require('body-parser');
-var session      = require('express-session');
+var bodyParser = require('body-parser');
+var session = require('express-session');
+var request = require('request');
+var flickr = require('./env.js');
+var zillow = require('./envzillow.js');
 
 var db = require("./models")
 
@@ -33,6 +36,24 @@ app.use(function (req, res, next) {
 	res.locals.currentUser = req.user;
 	next();
 });
+
+
+app.get("/flickresults", function(req, res) {
+	request('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=bc5e2c38affbc505bdeb1b0742c88374&text=home+deck&format=json&nojsoncallback=1', function(error, response, body) {
+		if(error) {
+			console.log("Something went wrong");
+			console.log("error");
+		} else {
+			if(response.statusCode == 200) {
+				var results = JSON.parse(body);
+				console.log(body);
+			}
+		}
+	})
+});
+
+
+
 var routes = require('./config/routes');
 app.use(routes);
 
