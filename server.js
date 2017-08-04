@@ -37,16 +37,21 @@ app.use(function (req, res, next) {
 	next();
 });
 
+app.get('/', function(req, res) {
+	res.render("flicksearch");
+});
 
 app.get("/flickresults", function(req, res) {
-	request('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=bc5e2c38affbc505bdeb1b0742c88374&text=home+deck&format=json&nojsoncallback=1', function(error, response, body) {
+	request("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + flickr.apiKey + "&text=home+deck&format=json&nojsoncallback=1", function(error, response, body) {
 		if(error) {
 			console.log("Something went wrong");
 			console.log("error");
 		} else {
 			if(response.statusCode == 200) {
-				var results = JSON.parse(body);
-				console.log(body);
+				var data = JSON.parse(body);
+				console.log(results);
+				//res.send(results["photos"]);
+				res.render("results", {data: data});
 			}
 		}
 	})
