@@ -5,6 +5,8 @@ var UserPost = require('./userpost.js');
 
 var User = mongoose.Schema({
   local : {
+    firstName: String,
+    lastName: String,
     email: String,
     password: String,
     address: String,

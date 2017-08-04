@@ -31,6 +31,9 @@ module.exports = function(passport) {
 	      // There is no user registered with this email
 			// Create a new user
 			var newUser            = new User();
+			var firstName = req.body.firstName;
+			newUser.local.firstName = firstName;
+			console.log(firstName);
 			newUser.local.email    = email;
 			newUser.local.password = newUser.hash(password);
 

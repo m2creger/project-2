@@ -15,6 +15,8 @@ var zillow = require('./envzillow.js');
 
 var db = require("./models")
 
+
+
 app.use(morgan('dev')); 
 app.use(cookieParser());
 app.use(bodyParser()); 
@@ -41,23 +43,50 @@ app.get('/', function(req, res) {
 	res.render("flicksearch");
 });
 
+function flickrPhoto(farmID, serverID, flickrPhotoID, secret) {
+	this.farmID = farmID,
+	this.serverID = serverID,
+	this.flickrPhotoID = flickrPhotoID,
+	this.secret = secret
+}
+var photoResults = [];
+
 app.get("/flickresults", function(req, res) {
+	var searchTerm = req.query.search;
+	console.log("the flickr key is " +  flickr.apiKey);
 	request("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + flickr.apiKey + "&text=home+deck&format=json&nojsoncallback=1", function(error, response, body) {
+		var photoURLObject = {
+			farmID: String,
+			serverID: String,
+			flickrPhotoID: String,
+			secret: String
+		};
 		if(error) {
 			console.log("Something went wrong");
 			console.log("error");
 		} else {
 			if(response.statusCode == 200) {
-				var data = JSON.parse(body);
-				console.log(results);
+				var data = JSON.parse(body).photos.photo;
+				data.forEach(function(picture) {
+					//console.log(picture);
+					var farm = picture.farm;
+					var server = picture.server;
+					var photoID = picture.id;
+					var secret = picture.secret;
+					//var newPhoto = flickrPhoto(farm, server, photoID, newPhoto);
+					var newPhotoURL = "https://farm" + farm + "." + "staticflickr.com/" + server+ "/" + "_" + secret + ".jpg";
+					console.log(newPhotoURL);
+					photoResults.push(newPhotoURL);
+					
+				});
+				console.log(photoResults);
+				//console.log(data);
 				//res.send(results["photos"]);
-				res.render("results", {data: data});
+				//res.render("results", {data: data});
 			}
 		}
 	})
 });
-
-
 
 var routes = require('./config/routes');
 app.use(routes);
