@@ -56,7 +56,7 @@ app.get("/search", function(req, res) {
 	
 });
 
-app.get('/flickrresults', function(req, res) {
+app.get('/flickresults', function(req, res) {
 	var searchTerm = req.query.search;
 	console.log("the flickr key is " +  flickr.apiKey);
 	request("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + flickr.apiKey + "&text=home+deck&format=json&nojsoncallback=1", function(error, response, body) {
@@ -74,11 +74,12 @@ app.get('/flickrresults', function(req, res) {
 					var secret = picture.secret;
 					
 					var newPhotoURL = "https://farm" + farm + "." + "staticflickr.com/" + server+ "/" + photoID + "_"  + secret + ".jpg";
-					console.log(newPhotoURL);
+					//console.log(newPhotoURL);
 					photoResults.push(newPhotoURL);
 					
 				});
-				console.log(photoResults);
+				//console.log(photoResults);
+				
 				res.render("flickresults", {photoResults: photoResults});
 				//console.log(data);
 				//res.send(results["photos"]);
