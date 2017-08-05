@@ -26,12 +26,15 @@
           <ul class="nav navbar-nav">
             <% if (currentUser) { %>
               <li><a href="/authorized">Hello! <%= currentUser.local.firstName %> </a></li>
-            <% } else { %> 
+              <% } else { %> 
                 <li><a href="/login">Login</a></li>
                 <li><a href="/signup">Signup</a></li>
+                <li><a href="/newhomeproject">Add home project</a></li>
+                <li><a href="/flicksearch">Flickr Search</a></li>
             <% } %>
           </ul>
-          <button id="flickrButton" type="button" class="btn btn-default">Flickr</button>
+          
+          
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
 

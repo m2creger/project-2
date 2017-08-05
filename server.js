@@ -13,20 +13,24 @@ var request = require('request');
 var flickr = require('./env.js');
 var zillow = require('./envzillow.js');
 
+
 var db = require("./models")
 
 
 
 app.use(morgan('dev')); 
 app.use(cookieParser());
-app.use(bodyParser()); 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
 
 app.set('views', './views');
 app.engine('ejs', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 
 app.use(express.static(__dirname + '/public'));
- 
+
+app.use(session({ secret: 'WDI-GENERAL-ASSEMBLY-EXPRESS' }));  
 app.use(passport.initialize());
 app.use(passport.session()); 
 app.use(flash()); 
@@ -38,28 +42,30 @@ app.use(function (req, res, next) {
 	next();
 });
 
-app.get('/', function(req, res) {
-	res.render("flicksearch");
-});
-
 var photoResults = [];
 
 // Home Page
 app.get('/', function(req, res) {
-
+	res.render("index");
 });
+app.get('/newhomeproject', function(req, res) {
+	res.render("newhomeproject");
+})
 // User authenticated
 app.get('/authenticated', function(req, res) {
 
 });
-app.get("/search", function(req, res) {
-	
+app.get("/flicksearch", function(req, res) {
+	res.render("flicksearch");
 });
 
 app.get('/flickresults', function(req, res) {
 	var searchTerm = req.query.search;
+	console.log(searchTerm);
+	var url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + flickr.apiKey + "&text=" + searchTerm +"&format=json&nojsoncallback=1";
+	console.log(url);
 	console.log("the flickr key is " +  flickr.apiKey);
-	request("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + flickr.apiKey + "&text=home+deck&format=json&nojsoncallback=1", function(error, response, body) {
+	request(url, function(error, response, body) {
 		if(error) {
 			console.log("Something went wrong");
 			console.log("error");
@@ -74,8 +80,8 @@ app.get('/flickresults', function(req, res) {
 					var secret = picture.secret;
 					
 					var newPhotoURL = "https://farm" + farm + "." + "staticflickr.com/" + server+ "/" + photoID + "_"  + secret + ".jpg";
-					console.log("New photo url");
-					console.log(newPhotoURL);
+					//console.log("New photo url");
+					//console.log(newPhotoURL);
 					photoResults.push(newPhotoURL);
 					
 				});
