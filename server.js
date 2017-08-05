@@ -74,7 +74,8 @@ app.get('/flickresults', function(req, res) {
 					var secret = picture.secret;
 					
 					var newPhotoURL = "https://farm" + farm + "." + "staticflickr.com/" + server+ "/" + photoID + "_"  + secret + ".jpg";
-					//console.log(newPhotoURL);
+					console.log("New photo url");
+					console.log(newPhotoURL);
 					photoResults.push(newPhotoURL);
 					
 				});
