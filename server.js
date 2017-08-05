@@ -26,8 +26,7 @@ app.engine('ejs', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 
 app.use(express.static(__dirname + '/public'));
-
-app.use(session({ secret: 'WDI-GENERAL-ASSEMBLY-EXPRESS' })); 
+ 
 app.use(passport.initialize());
 app.use(passport.session()); 
 app.use(flash()); 
@@ -45,7 +44,19 @@ app.get('/', function(req, res) {
 
 var photoResults = [];
 
+// Home Page
+app.get('/', function(req, res) {
+
+});
+// User authenticated
+app.get('/authenticated', function(req, res) {
+
+});
 app.get("/search", function(req, res) {
+	
+});
+
+app.get('/flickrresults', function(req, res) {
 	var searchTerm = req.query.search;
 	console.log("the flickr key is " +  flickr.apiKey);
 	request("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + flickr.apiKey + "&text=home+deck&format=json&nojsoncallback=1", function(error, response, body) {
@@ -68,7 +79,7 @@ app.get("/search", function(req, res) {
 					
 				});
 				console.log(photoResults);
-				res.render("flickresults", }{photoResults: photoResults});
+				res.render("flickresults", {photoResults: photoResults});
 				//console.log(data);
 				//res.send(results["photos"]);
 				//res.render("results", {data: data});
@@ -76,6 +87,13 @@ app.get("/search", function(req, res) {
 		}
 	})
 });
+
+// User post
+app.post('/', function(req, res) {
+
+});
+
+
 
 var routes = require('./config/routes');
 app.use(routes);
