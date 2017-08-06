@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var bcrypt   = require('bcrypt-nodejs');
 
-var UserPost = require('./userpost.js');
+var NewProject = require('./newproject.js');
 
 var User = mongoose.Schema({
   local : {
@@ -12,7 +12,7 @@ var User = mongoose.Schema({
     address: String,
     city: String,
     state: String,
-    userpost: [UserPost.schema]
+    userprojects: [NewProject.schema]
   }
 });
 

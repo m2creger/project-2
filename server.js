@@ -14,7 +14,7 @@ var flickr = require('./env.js');
 var zillow = require('./envzillow.js');
 
 var db = require("./models")
-
+var userAuth = require("./controllers/users.js");
 app.use(morgan('dev')); 
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -45,20 +45,17 @@ var photoResults = [];
 app.get('/', function(req, res) {
 	res.render("index");
 });
-app.get('/newdiy', function(req, res) {
+app.get('/newdiy', userAuth.authorized, function(req, res) {
 	//console.log("render newdiy");
 	res.render("newdiy");
 });
-app.get('/newpro', function(req, res) {
+app.get('/newpro', userAuth.authorized, function(req, res) {
 	res.render("newpro");
 });
-app.get('/newhomeproject', function(req, res) {
+app.get('/newhomeproject', userAuth.authorized, function(req, res) {
 	res.render("newhomeproject");
 })
-// User authenticated
-app.get('/authenticated', function(req, res) {
 
-});
 app.get("/flicksearch", function(req, res) {
 	res.render("flicksearch");
 });
@@ -102,8 +99,8 @@ app.get('/flickresults', function(req, res) {
 	})
 });
 
-app.get("/projects", function(req, res) {
-	db.NewDIY.find({}, function(err, posts) {
+app.get("/projects", userAuth.authorized, function(req, res) {
+	db.NewProject.find({}, function(err, posts) {
 		if(err) {
 			console.log(err)
 		} else {
@@ -111,8 +108,9 @@ app.get("/projects", function(req, res) {
 		}
 	})
 })
-app.get("/projectedit/:id", function(req, res) {
-	db.NewDIY.findById({req.params.id}, function(err, project) {
+app.get("/projectedit/:id", userAuth.authorized, function(req, res) {
+	var projectId = req.params.id;
+	db.NewProject.findById({}, function(err, project) {
 		
 	});
 });

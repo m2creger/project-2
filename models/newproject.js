@@ -1,11 +1,15 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+var Pictures = require('./pictures.js')
+var Supplies = require("./supplies.js");
+
 var NewProjectSchema = new Schema ({
 	newIdea: String,
 	budget: String,
 	quotes: String,
-	pictures: [String]
+	pictures: [Pictures.schema],
+	supplies: [Supplies.schema]
 });
 
 var NewProject = mongoose.model('NewProject', NewProjectSchema);
