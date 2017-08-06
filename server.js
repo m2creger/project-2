@@ -102,12 +102,33 @@ app.get('/flickresults', function(req, res) {
 	})
 });
 
+app.get("/projectlist", function(req, res) {
+	db.NewDIYPost.find({}, function(err, posts) {
+		if(err) {
+			console.log(err)
+		} else {
+			res.render('projectlist', {posts: posts});
+		}
+	})
+})
+
 // User post
 app.post('/', function(req, res) {
 	var newIdea = req.body.newIdea;
 	var budget = req.body.budget;
 	console.log(newIdea);
 	console.log(budget);
+	var newPost = {
+		newIdea: newIdea,
+		budget: budget
+	}
+	db.NewDIYPost.create(newPost, function(err, newpost) {
+		if(err) {
+			console.log(err);
+		} else {
+			console.log(newpost);
+		}
+	})
 	res.render("projectlist");
 });
 

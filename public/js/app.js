@@ -33,39 +33,37 @@ $(document).ready(function() {
 
     });
   });
+  $('#addSupplies').on('click', function(event) {
+    event.preventDefault();
+    console.log("add supplies");
+    var htmlToAdd = 
+      "<input class='form-control' type='text' name='supplies' id='suppliesField' placeholder='supply'>"+
+      "<span class='input-group-addon'>-</span>"+
+      "<input class='form-control' type='text' name='class' id='costField' placeholder='Cost'>";
+      console.log(htmlToAdd);
+      var costField = $('#costField');
+      //console.log(costField);
+      costField.append(htmlToAdd);
+  });
+  $("img").on('click', function(event) {
+    event.preventDefault();
+    var imageURL = $(this).attr('src');
+    console.log(imageURL);
+    addPictureToDatabase(imageURL);
+  });
 
-  // $('addHomeProject').on('click', function(event) {
-  //   $.ajax({
-  //     type: "POST",
-  //     url: "/newhomeproject",
-  //     success: function() {
-  //       console.log("Success");
-  //     },
-  //     error: function() {
-  //       console.log("error posting form data")
-  //     }
-  //   })
-  // })
+
 });
 
-function showResults() {
-	 $.ajax({
-      type: "GET",
-      url: '/flickrresults',
+function addPictureToDatabase(url) {
+   $.ajax({
+      type: "POST",
+      url: "/",
       success: function() {
-      	console.log("Success");
+        console.log("Success");
       },
       error: function() {
         console.log("error posting form data")
       }
-
-    });
-}
-
-function renderFlickrResults() {
-	//$('#flickrResultsModal').modal("show");
-}
-
-function showFlickrResults() {
-	
+    })
 }
