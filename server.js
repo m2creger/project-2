@@ -13,10 +13,7 @@ var request = require('request');
 var flickr = require('./env.js');
 var zillow = require('./envzillow.js');
 
-
 var db = require("./models")
-
-
 
 app.use(morgan('dev')); 
 app.use(cookieParser());
@@ -48,6 +45,13 @@ var photoResults = [];
 app.get('/', function(req, res) {
 	res.render("index");
 });
+app.get('/newdiy', function(req, res) {
+	//console.log("render newdiy");
+	res.render("newdiy");
+});
+app.get('/newpro', function(req, res) {
+	res.render("newpro");
+});
 app.get('/newhomeproject', function(req, res) {
 	res.render("newhomeproject");
 })
@@ -60,7 +64,9 @@ app.get("/flicksearch", function(req, res) {
 });
 
 app.get('/flickresults', function(req, res) {
+	console.log(req.body);
 	var searchTerm = req.query.search;
+	searchTerm = searchTerm.replace(" ", "+");
 	console.log(searchTerm);
 	var url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + flickr.apiKey + "&text=" + searchTerm +"&format=json&nojsoncallback=1";
 	console.log(url);
@@ -98,7 +104,11 @@ app.get('/flickresults', function(req, res) {
 
 // User post
 app.post('/', function(req, res) {
-
+	var newIdea = req.body.newIdea;
+	var budget = req.body.budget;
+	console.log(newIdea);
+	console.log(budget);
+	res.render("projectlist");
 });
 
 
