@@ -40,11 +40,12 @@ function getLogout(req, res) {
 
 // Authorized User page
 function authorized(req, res){
+  console.log("the user is" + req.user);
   // If the user is authenticated, then we continue the execution
     if (req.isAuthenticated()) return next();
 
     // Otherwise the request is always redirected to the home page
-    res.redirect('/');
+    res.redirect('/login');
 }
 
 module.exports = {

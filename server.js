@@ -100,11 +100,13 @@ app.get('/flickresults', function(req, res) {
 });
 
 app.get("/projects", userAuth.authorized, function(req, res) {
+	console.log("the user is" + req.user);
+	var currentUser = req.user;
 	db.NewProject.find({}, function(err, posts) {
 		if(err) {
 			console.log(err)
 		} else {
-			res.render('projectlist', {posts: posts});
+			res.render('projectlist', {posts: posts, currentUser: req.user});
 		}
 	})
 })
@@ -116,7 +118,7 @@ app.get("/projectedit/:id", userAuth.authorized, function(req, res) {
 });
 
 // User post
-app.post('/projects', function(req, res) {
+app.post('/projects', userAuth.authorized, function(req, res) {
 	console.log(req.body);
 	var newIdea = req.body.newIdea;
 	//var budget = req.body.budget;
