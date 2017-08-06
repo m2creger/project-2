@@ -18,7 +18,7 @@ var db = require("./models")
 app.use(morgan('dev')); 
 app.use(cookieParser());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
 app.set('views', './views');
@@ -102,7 +102,7 @@ app.get('/flickresults', function(req, res) {
 	})
 });
 
-app.get("/projectlist", function(req, res) {
+app.get("/projects", function(req, res) {
 	db.NewDIYPost.find({}, function(err, posts) {
 		if(err) {
 			console.log(err)
@@ -113,24 +113,30 @@ app.get("/projectlist", function(req, res) {
 })
 
 // User post
-app.post('/', function(req, res) {
+app.post('/projects', function(req, res) {
+	console.log(req.body);
 	var newIdea = req.body.newIdea;
-	var budget = req.body.budget;
+	//var budget = req.body.budget;
 	console.log(newIdea);
-	console.log(budget);
+	//console.log(budget);
 	var newPost = {
 		newIdea: newIdea,
-		budget: budget
-	}
-	db.NewDIYPost.create(newPost, function(err, newpost) {
+		//budget: budget
+	};
+	console.log(newPost);
+	db.NewDIY.create(newPost, function(err, newpost) {
 		if(err) {
 			console.log(err);
 		} else {
 			console.log(newpost);
 		}
-	})
+	});
 	res.render("projectlist");
 });
+
+app.get('/projects/:id', function(err, project) {
+
+})
 
 
 

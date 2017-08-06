@@ -2,3 +2,16 @@
 <% photoResults.forEach(function(photo) { %>
   <img src="<% photo %>" class="img-rounded" alt="Cinque Terre" width="304" height="236">
 <% }) %>
+
+
+ <div class="form-group">
+    <label for="budget">Budget</label>
+    <input class="form-control" type="text" name="budget" id="budget">
+  </div>
+  <button id="addSupplies" type="button" class="btn btn-primary btn-md">Add Supplies</button>
+  <div class="form-group" id="newSupplies">
+    <label for="supplies">Supplies</label>
+    <input class="form-control" type="text" name="supplies" id="suppliesField" placeholder="supply">
+    <span class="input-group-addon">-</span>
+    <input class="form-control" type="text" name="cost" id="costField" placeholder="Cost">
+  </div>

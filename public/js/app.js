@@ -51,6 +51,9 @@ $(document).ready(function() {
     console.log(imageURL);
     addPictureToDatabase(imageURL);
   });
+  $('.projectDiv').click(function(event) {
+
+  }); 
 
 
 });
@@ -59,7 +62,7 @@ function addPictureToDatabase(url) {
    $.ajax({
       type: "POST",
       url: "/",
-      
+
       success: function() {
         console.log("Success");
       },
