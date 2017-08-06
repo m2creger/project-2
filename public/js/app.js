@@ -59,6 +59,7 @@ function addPictureToDatabase(url) {
    $.ajax({
       type: "POST",
       url: "/",
+      
       success: function() {
         console.log("Success");
       },
