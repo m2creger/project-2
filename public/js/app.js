@@ -35,14 +35,15 @@ $(document).ready(function() {
   });
   $('#addSupplies').on('click', function(event) {
     event.preventDefault();
+    //console.log(this);
     console.log("add supplies");
     var htmlToAdd = 
       "<input class='form-control' type='text' name='supplies' id='suppliesField' placeholder='supply'>"+
       "<span class='input-group-addon'>-</span>"+
       "<input class='form-control' type='text' name='class' id='costField' placeholder='Cost'>";
       console.log(htmlToAdd);
-      var costField = $('#costField');
-      //console.log(costField);
+      var costField = $('.newSupplies');
+      console.log(costField);
       costField.append(htmlToAdd);
   });
   $("img").on('click', function(event) {

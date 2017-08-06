@@ -103,7 +103,7 @@ app.get('/flickresults', function(req, res) {
 });
 
 app.get("/projects", function(req, res) {
-	db.NewDIYPost.find({}, function(err, posts) {
+	db.NewDIY.find({}, function(err, posts) {
 		if(err) {
 			console.log(err)
 		} else {
@@ -111,6 +111,9 @@ app.get("/projects", function(req, res) {
 		}
 	})
 })
+app.get("/projectedit/:id", function(req, res) {
+	
+});
 
 // User post
 app.post('/projects', function(req, res) {
