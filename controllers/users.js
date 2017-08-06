@@ -39,7 +39,7 @@ function getLogout(req, res) {
 }
 
 // Authorized User page
-function authorized(req, res){
+function authorized(req, res, next){
   console.log("the user is" + req.user);
   // If the user is authenticated, then we continue the execution
     if (req.isAuthenticated()) return next();

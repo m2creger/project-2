@@ -107,6 +107,7 @@ app.get("/projects", userAuth.authorized, function(req, res) {
 			console.log(err)
 		} else {
 			res.render('projectlist', {posts: posts, currentUser: req.user});
+			//{posts: posts, currentUser: req.user}
 		}
 	})
 })
