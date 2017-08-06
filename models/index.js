@@ -5,4 +5,6 @@ mongoose.connect( process.env.MONGODB_URI ||
                   "mongodb://localhost/project-2");
 
 module.exports.User = require("./user.js");
-module.exports.NewDIY = require("./newDIYpost.js");
+module.exports.NewProject = require("./newproject.js");
+module.exports.Supply = require("./supplies.js");
+module.exports.Picture = require("./pictures.js");

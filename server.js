@@ -112,7 +112,9 @@ app.get("/projects", function(req, res) {
 	})
 })
 app.get("/projectedit/:id", function(req, res) {
-	
+	db.NewDIY.findById({req.params.id}, function(err, project) {
+		
+	});
 });
 
 // User post
