@@ -60,11 +60,13 @@ $(document).ready(function() {
 });
 
 function addPictureToDatabase(url) {
-
+  var datastring = 'name=' + url;
+  
    $.ajax({
       type: "POST",
       url: "/addpicture",
-      data: url,
+      data: datastring,
+      dataType: "json",
       success: function() {
         console.log("Success");
       },

@@ -27,5 +27,9 @@
     "passport-local": "^1.0.0",
     "request": "^2.81.0",
     "sessions": "0.0.2-7"
+  },
+  "devDependencies": {
+    "chai": "^4.1.1",
+    "mocha": "^3.5.0"
   }
 }

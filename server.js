@@ -233,7 +233,12 @@ app.get("/addpicture", function(req, res) {
 	res.render("flicksearch");
 })
 app.post("/addpicture", function(req, res) {
-	console.log("Adding picture" + req.body);
+	var pictureURL = req.body.name;
+
+	var newPicture = new db.Picture({
+		url: pictureURL 
+	});
+	console.log(newPicture);
 	db.NewProject.findById({_id: currentProject}, function(err, project) {
 		console.log("The current project is " + project);
 		if(err) {
