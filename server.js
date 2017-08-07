@@ -249,7 +249,7 @@ app.post("/addpicture", function(req, res) {
 	var newPicture = new db.Picture({
 		url: pictureURL 
 	});
-	console.log(newPicture);
+	console.log("The new picture being added is " + newPicture);
 	db.NewProject.findById({_id: currentProject}, function(err, project) {
 		console.log("The current project is " + project);
 		if(err) {
@@ -257,6 +257,7 @@ app.post("/addpicture", function(req, res) {
 		} else {
 			project.pictures.push();
 			project.save();
+			console.log("project was saved");
 			res.json(project);
 		}
 	})
