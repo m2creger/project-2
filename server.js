@@ -15,7 +15,8 @@ var zillow = require('./envzillow.js');
 var methodOverride = require("method-override");
 
 // Current Project
-var currentProject = '';
+var currentProject = "";
+var currentUser = "";
 
 var db = require("./models")
 var userAuth = require("./controllers/users.js");
@@ -147,7 +148,8 @@ app.get('/flickresults', function(req, res) {
 
 app.get("/projects", userAuth.authorized, function(req, res) {
 	console.log("the user is" + req.user);
-	var currentUser = req.user;
+	currentUser = req.user;
+	console.log("The current user is " + currentUser);
 	db.NewProject.find({}, function(err, posts) {
 		if(err) {
 			console.log(err)
@@ -166,21 +168,32 @@ app.post('/projects', userAuth.authorized, function(req, res) {
 	var budget = req.body.budget;
 	console.log(newIdea);
 	//console.log(budget);
-	var newPost = {
+	var newProjectIdea = new db.NewProject ({
 		newIdea: newIdea,
 		budget: budget
-	};
-	console.log(newPost);
-	db.NewProject.create(newPost, function(err, newpost) {
+	});
+	currentProject = newProjectIdea._id;
+	console.log(newProjectIdea);
+	db.User.findById({_id: currentUser}, function(err, user) {
+		console.log("found user" + user);
 		if(err) {
 			console.log(err);
 		} else {
-			currentProject = newpost._id;
-			console.log("The current project is " + currentProject);
-			console.log("The new project post is " + newpost);
+			user.userprojects.push(newProjectIdea);
+			
+			res.render("projectdetails");
 		}
-	});
-	res.render("projectdetails");
+	})
+	// db.NewProject.create(newPost, function(err, newpost) {
+	// 	if(err) {
+	// 		console.log(err);
+	// 	} else {
+	// 		currentProject = newpost._id;
+	// 		console.log("The current project is " + currentProject);
+	// 		console.log("The new project post is " + newpost);
+	// 	}
+	// });
+	
 });
 
 // ********* edit project *******/
