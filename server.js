@@ -186,7 +186,7 @@ app.post('/projects', userAuth.authorized, function(req, res) {
 		newIdea: newIdea,
 		budget: budget
 	};
-	currentProject = newProjectIdea._id;
+	
 	console.log(newProjectIdea);
 	console.log("The current user is " + currentUser);
 	// db.User.findById({_id: currentUser}, function(err, user) {
@@ -206,7 +206,7 @@ app.post('/projects', userAuth.authorized, function(req, res) {
 			currentProject = newProjectIdea._id;
 			console.log("The current project is " + currentProject);
 			console.log("The new project post is " + newpost);
-			res.redirect('/');
+			res.render("projectdetails", currentProject);
 		}
 	});
 	
