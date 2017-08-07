@@ -77,7 +77,7 @@ app.post('/supplyadd', function(req, res) {
 	var supply = req.body.supplies;
 	var cost = req.body.cost;
 	var newSupply = new db.Supply ({
-		supply: supply,
+		supplyName: supply,
 		cost: cost
 	});
 	console.log("The current project in post supplies is " + currentProject);
@@ -189,23 +189,37 @@ app.get("/editproject/:id", userAuth.authorized, function(req, res) {
 	var projectId = req.params.id;
 	console.log(projectId);
 	db.NewProject.findById(projectId, function(err, foundProject) {
+		currentProject = projectId
 		console.log(foundProject);
 		res.render("updateproject", {project: foundProject});
 	});
 });
 
 app.put("/editproject/:id", userAuth.authorized, function(req, res) {
-	res.send("update route");
+	console.log(req.body.project);
 	var updatedCost = req.body.cost;
 	var updatedBudget = req.body.budget;
-	db.NewProject.findByIdAndUpdate(req.params.id, function() {
+	db.NewProject.findByIdAndUpdate({_id: req.params.id}, req.body.project, function(err, foundProject) {
+		console.log("Found project to update" + foundProject);
 		if(err) {
 			console.log(err);
 		} else {
-			res.redirect('/projects');
+			res.render('projectlist');
 		}
 	})
 });
+
+// ****** Delete project ******** //
+app.delete("/deleteproject/:id", function(req, res) {
+	db.NewProject.findOneAndRemove({_id: req.params.id}, function(err, project) {
+		console.log("found project to remove" + project);
+		if(err) {
+			console.log(err);
+		} else {
+			res.render('projectlist');
+		}
+	});
+});	
 
 var routes = require('./config/routes');
 

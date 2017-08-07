@@ -2,9 +2,9 @@
 <form action="/supplyadd" method="POST">
   <div class="form-group" class="newSupplies">
 	    <label for="supplies">Supplies</label>
-	    <input class="form-control" type="text" name="supplies" id="suppliesField" placeholder="Supplies needed">
+	    <input class="form-control" type="text" name="supplies[supplyName]" id="suppliesField" placeholder="Supplies needed">
 	    <span class="input-group-addon">-</span>
-	    <input class="form-control" type="text" name="cost" id="costField" placeholder="Cost">
+	    <input class="form-control" type="text" name="supplies[cost]" id="costField" placeholder="Cost">
   	</div>
   
   <input class="btn btn-default" type="submit">
