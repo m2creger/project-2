@@ -189,12 +189,22 @@ app.get("/editproject/:id", userAuth.authorized, function(req, res) {
 	var projectId = req.params.id;
 	console.log(projectId);
 	db.NewProject.findById(projectId, function(err, foundProject) {
+		console.log(foundProject);
 		res.render("updateproject", {project: foundProject});
 	});
 });
 
 app.put("/editproject/:id", userAuth.authorized, function(req, res) {
-	
+	res.send("update route");
+	var updatedCost = req.body.cost;
+	var updatedBudget = req.body.budget;
+	db.NewProject.findByIdAndUpdate(req.params.id, function() {
+		if(err) {
+			console.log(err);
+		} else {
+			res.redirect('/projects');
+		}
+	})
 });
 
 var routes = require('./config/routes');
