@@ -12,6 +12,7 @@ var session = require('express-session');
 var request = require('request');
 var flickr = require('./env.js');
 var zillow = require('./envzillow.js');
+var methodOverride = require("method-override");
 
 // Current Project
 var currentProject = '';
@@ -34,6 +35,7 @@ app.use(session({ secret: 'WDI-GENERAL-ASSEMBLY-EXPRESS' }));
 app.use(passport.initialize());
 app.use(passport.session()); 
 app.use(flash()); 
+app.use(methodOverride("_method"))
 
 
 
@@ -186,9 +188,13 @@ app.post('/projects', userAuth.authorized, function(req, res) {
 app.get("/editproject/:id", userAuth.authorized, function(req, res) {
 	var projectId = req.params.id;
 	console.log(projectId);
-	db.NewProject.findById({}, function(err, foundProject) {
-		res.render("updateproject", {project: foundProject})
+	db.NewProject.findById(projectId, function(err, foundProject) {
+		res.render("updateproject", {project: foundProject});
 	});
+});
+
+app.put("/editproject/:id", userAuth.authorized, function(req, res) {
+	
 });
 
 var routes = require('./config/routes');
