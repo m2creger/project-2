@@ -1,7 +1,15 @@
-.navbar-default {
-	background-color: #f06292;
-	
-}
+
 .navbar .nav>li>a, .navbar .navbar-brand {
-  color: #fff !important;
+  color: #E91E63 !important;
+}
+
+.panel-body {
+	background-color: #880E4F;
+	color: #FCE4EC !important;
+}
+h2 {
+	color: #FCE4EC;
+}
+.sectionTitles {
+	color: #C2185B;
 }
