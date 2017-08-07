@@ -12,6 +12,7 @@ var session = require('express-session');
 var request = require('request');
 var flickr = require('./env.js');
 var zillow = require('./envzillow.js');
+var routes = require('./config/routes');
 
 var db = require("./models")
 var userAuth = require("./controllers/users.js");
@@ -32,6 +33,8 @@ app.use(passport.initialize());
 app.use(passport.session()); 
 app.use(flash()); 
 
+app.use(routes);
+
 require('./config/passport')(passport);
 
 app.use(function (req, res, next) {
@@ -45,13 +48,11 @@ var photoResults = [];
 app.get('/', function(req, res) {
 	res.render("index");
 });
-app.get('/newdiy', userAuth.authorized, function(req, res) {
+app.get('/newproject', userAuth.authorized, function(req, res) {
 	//console.log("render newdiy");
-	res.render("newdiy");
+	res.render("newproject");
 });
-app.get('/newpro', userAuth.authorized, function(req, res) {
-	res.render("newpro");
-});
+
 app.get('/newhomeproject', userAuth.authorized, function(req, res) {
 	res.render("newhomeproject");
 })
@@ -111,12 +112,6 @@ app.get("/projects", userAuth.authorized, function(req, res) {
 		}
 	})
 })
-app.get("/projectedit/:id", userAuth.authorized, function(req, res) {
-	var projectId = req.params.id;
-	db.NewProject.findById({}, function(err, project) {
-		
-	});
-});
 
 // User post
 app.post('/projects', userAuth.authorized, function(req, res) {
@@ -140,14 +135,16 @@ app.post('/projects', userAuth.authorized, function(req, res) {
 	res.render("projectlist");
 });
 
-app.get('/projects/:id', function(err, project) {
+app.get("/projectedit/:id", userAuth.authorized, function(req, res) {
+	var projectId = req.params.id;
+	db.NewProject.findById({}, function(err, project) {
+		
+	});
+});
 
-})
 
 
 
-var routes = require('./config/routes');
-app.use(routes);
 
 app.listen(process.env.PORT || 3000, function () {
   console.log('Express server is up and running on http://localhost:3000/');
