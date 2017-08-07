@@ -137,6 +137,7 @@ app.get('/flickresults', function(req, res) {
 				//res.send(results["photos"]);
 				//res.render("results", {data: data});
 				photoResults.length = 0;
+				console.log("Current photo results are " + photoResults);
 			}
 		}
 	})
