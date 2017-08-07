@@ -188,6 +188,7 @@ app.post('/projects', userAuth.authorized, function(req, res) {
 	};
 	currentProject = newProjectIdea._id;
 	console.log(newProjectIdea);
+	console.log("The current user is " + currentUser);
 	// db.User.findById({_id: currentUser}, function(err, user) {
 	// 	console.log("found user" + user);
 	// 	if(err) {
@@ -198,14 +199,14 @@ app.post('/projects', userAuth.authorized, function(req, res) {
 	// 		res.render("projectdetails");
 	// 	}
 	// })
-	db.NewProject.create(newPost, function(err, newpost) {
+	db.NewProject.create(newProjectIdea, function(err, newpost) {
 		if(err) {
 			console.log(err);
 		} else {
-			currentProject = newpost._id;
+			currentProject = newProjectIdea._id;
 			console.log("The current project is " + currentProject);
 			console.log("The new project post is " + newpost);
-			res.render('projectlist');
+			res.redirect('/');
 		}
 	});
 	
@@ -263,13 +264,12 @@ app.post("/addpicture", function(req, res) {
 
 // ****** Delete project ******** //
 app.delete("/deleteproject/:id", function(req, res) {
-	db.NewProject.findOneAndRemove({_id: req.params.id}, function(err, project) {
-		console.log("found project to remove" + project);
+	db.NewProject.findByIdAndRemove({_id: req.params.id}, function(err, deletedProject) {
+		console.log("found project to remove" + deletedProject);
 		if(err) {
 			console.log(err);
 		} else {
-
-			res.render('projectlist');
+			res.redirect('/');
 		}
 	});
 });	
