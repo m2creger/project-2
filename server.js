@@ -12,7 +12,7 @@ var session = require('express-session');
 var request = require('request');
 var flickr = require('./env.js');
 var zillow = require('./envzillow.js');
-var routes = require('./config/routes');
+
 
 var db = require("./models")
 var userAuth = require("./controllers/users.js");
@@ -33,13 +33,16 @@ app.use(passport.initialize());
 app.use(passport.session()); 
 app.use(flash()); 
 
-app.use(routes);
+
 
 require('./config/passport')(passport);
 
 app.use(function (req, res, next) {
+	//console.log(currentUser);
 	res.locals.currentUser = req.user;
+	//console.log(currentUser);
 	next();
+
 });
 
 var photoResults = [];
@@ -48,15 +51,30 @@ var photoResults = [];
 app.get('/', function(req, res) {
 	res.render("index");
 });
+
+// ************start new project**********/
 app.get('/newproject', userAuth.authorized, function(req, res) {
-	//console.log("render newdiy");
+	
 	res.render("newproject");
 });
 
+// ************ Add project details ******/
+app.get('/projectdetails', function(req, res) {
+	console.log(req.params.id);
+	res.render("projectdetails");
+})
+
+app.get('/addsupplies', function(req, res) {
+	res.render('addsupplies');
+});
+
+// ** Not sure what this route is ****
 app.get('/newhomeproject', userAuth.authorized, function(req, res) {
 	res.render("newhomeproject");
 })
 
+
+// ***** Search flickr********
 app.get("/flicksearch", function(req, res) {
 	res.render("flicksearch");
 });
@@ -100,6 +118,8 @@ app.get('/flickresults', function(req, res) {
 	})
 });
 
+// ******** Get all projects for user ********/
+
 app.get("/projects", userAuth.authorized, function(req, res) {
 	console.log("the user is" + req.user);
 	var currentUser = req.user;
@@ -107,13 +127,13 @@ app.get("/projects", userAuth.authorized, function(req, res) {
 		if(err) {
 			console.log(err)
 		} else {
-			res.render('projectlist', {posts: posts, currentUser: req.user});
+			res.render('projectlist', {posts: posts});
 			//{posts: posts, currentUser: req.user}
 		}
 	})
 })
 
-// User post
+//*******  New project post ********/
 app.post('/projects', userAuth.authorized, function(req, res) {
 	console.log(req.body);
 	var newIdea = req.body.newIdea;
@@ -125,7 +145,7 @@ app.post('/projects', userAuth.authorized, function(req, res) {
 		//budget: budget
 	};
 	console.log(newPost);
-	db.NewDIY.create(newPost, function(err, newpost) {
+	db.NewProject.create(newPost, function(err, newpost) {
 		if(err) {
 			console.log(err);
 		} else {
@@ -135,6 +155,8 @@ app.post('/projects', userAuth.authorized, function(req, res) {
 	res.render("projectlist");
 });
 
+// ********* edit project *******/
+
 app.get("/projectedit/:id", userAuth.authorized, function(req, res) {
 	var projectId = req.params.id;
 	db.NewProject.findById({}, function(err, project) {
@@ -142,9 +164,9 @@ app.get("/projectedit/:id", userAuth.authorized, function(req, res) {
 	});
 });
 
+var routes = require('./config/routes');
 
-
-
+app.use(routes);
 
 app.listen(process.env.PORT || 3000, function () {
   console.log('Express server is up and running on http://localhost:3000/');

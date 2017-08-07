@@ -26,13 +26,12 @@
           <ul class="nav navbar-nav">
                 <li><a href="/newproject">Add home project</a></li>
                 <li><a href="/flicksearch">Flickr Search</a></li>
-                <li><a href="/Projects">My Projects</a></li>
-              <% if (!currentUser) { %>
+                <li><a href="/projects">My Projects</a></li>
                 <li><a href="/login">Login</a></li>
                 <li><a href="/signup">Signup</a></li>
-              <% } else { %> 
-                <li><a>Hello! <%= currentUser.local.firstName %> </a></li>
-              <% } %>
+                <li><a href="/login">Logout</a></li>
+
+
           </ul>
           
           

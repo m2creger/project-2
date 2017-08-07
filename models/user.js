@@ -11,8 +11,8 @@ var User = mongoose.Schema({
     password: String,
     address: String,
     city: String,
-    state: String,
-    userprojects: [NewProject.schema]
+    state: String
+    //userprojects: [NewProject.schema]
   }
 });
 
