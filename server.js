@@ -13,6 +13,8 @@ var request = require('request');
 var flickr = require('./env.js');
 var zillow = require('./envzillow.js');
 
+// Current Project
+var currentProject = '';
 
 var db = require("./models")
 var userAuth = require("./controllers/users.js");
@@ -63,11 +65,32 @@ app.get('/projectdetails', function(req, res) {
 	console.log(req.params.id);
 	res.render("projectdetails");
 })
-
+// ** add supplies to project ******
 app.get('/addsupplies', function(req, res) {
 	res.render('addsupplies');
 });
 
+// ****Post supplies to project *****/
+app.post('/supplyadd', function(req, res) {
+	var supply = req.body.supplies;
+	var cost = req.body.cost;
+	var newSupply = new db.Supply ({
+		supply: supply,
+		cost: cost
+	});
+	console.log("The current project in post supplies is " + currentProject);
+	db.NewProject.findOne({_id: currentProject}, function(err, project) {
+		console.log(project);
+		if(err) {
+			console.log(err)
+		} else {
+			project.supplies.push(newSupply);
+			project.save();
+			res.render('suppliesdone');
+		}
+	})
+	
+})
 // ** Not sure what this route is ****
 app.get('/newhomeproject', userAuth.authorized, function(req, res) {
 	res.render("newhomeproject");
@@ -127,6 +150,7 @@ app.get("/projects", userAuth.authorized, function(req, res) {
 		if(err) {
 			console.log(err)
 		} else {
+			console.log("All of the posts are" + posts);
 			res.render('projectlist', {posts: posts});
 			//{posts: posts, currentUser: req.user}
 		}
@@ -137,30 +161,33 @@ app.get("/projects", userAuth.authorized, function(req, res) {
 app.post('/projects', userAuth.authorized, function(req, res) {
 	console.log(req.body);
 	var newIdea = req.body.newIdea;
-	//var budget = req.body.budget;
+	var budget = req.body.budget;
 	console.log(newIdea);
 	//console.log(budget);
 	var newPost = {
 		newIdea: newIdea,
-		//budget: budget
+		budget: budget
 	};
 	console.log(newPost);
 	db.NewProject.create(newPost, function(err, newpost) {
 		if(err) {
 			console.log(err);
 		} else {
-			console.log(newpost);
+			currentProject = newpost._id;
+			console.log("The current project is " + currentProject);
+			console.log("The new project post is " + newpost);
 		}
 	});
-	res.render("projectlist");
+	res.render("projectdetails");
 });
 
 // ********* edit project *******/
 
-app.get("/projectedit/:id", userAuth.authorized, function(req, res) {
+app.get("/editproject/:id", userAuth.authorized, function(req, res) {
 	var projectId = req.params.id;
-	db.NewProject.findById({}, function(err, project) {
-		
+	console.log(projectId);
+	db.NewProject.findById({}, function(err, foundProject) {
+		res.render("updateproject", {project: foundProject})
 	});
 });
 

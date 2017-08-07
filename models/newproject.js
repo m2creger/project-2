@@ -6,7 +6,7 @@ var Supplies = require("./supplies.js");
 
 var NewProjectSchema = new Schema ({
 	newIdea: String,
-	budget: String,
+	budget: Number,
 	quotes: String,
 	pictures: [Pictures.schema],
 	supplies: [Supplies.schema]
