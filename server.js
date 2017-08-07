@@ -168,31 +168,36 @@ app.post('/projects', userAuth.authorized, function(req, res) {
 	var budget = req.body.budget;
 	console.log(newIdea);
 	//console.log(budget);
-	var newProjectIdea = new db.NewProject ({
+	// var newProjectIdea = new db.NewProject ({
+	// 	newIdea: newIdea,
+	// 	budget: budget
+	// });
+	var newProjectIdea = {
 		newIdea: newIdea,
 		budget: budget
-	});
+	};
 	currentProject = newProjectIdea._id;
 	console.log(newProjectIdea);
-	db.User.findById({_id: currentUser}, function(err, user) {
-		console.log("found user" + user);
-		if(err) {
-			console.log(err);
-		} else {
-			user.userprojects.push(newProjectIdea);
-			
-			res.render("projectdetails");
-		}
-	})
-	// db.NewProject.create(newPost, function(err, newpost) {
+	// db.User.findById({_id: currentUser}, function(err, user) {
+	// 	console.log("found user" + user);
 	// 	if(err) {
 	// 		console.log(err);
 	// 	} else {
-	// 		currentProject = newpost._id;
-	// 		console.log("The current project is " + currentProject);
-	// 		console.log("The new project post is " + newpost);
+	// 		user.userprojects.push(newProjectIdea);
+			
+	// 		res.render("projectdetails");
 	// 	}
-	// });
+	// })
+	db.NewProject.create(newPost, function(err, newpost) {
+		if(err) {
+			console.log(err);
+		} else {
+			currentProject = newpost._id;
+			console.log("The current project is " + currentProject);
+			console.log("The new project post is " + newpost);
+			res.render('projectlist');
+		}
+	});
 	
 });
 
@@ -200,9 +205,10 @@ app.post('/projects', userAuth.authorized, function(req, res) {
 
 app.get("/editproject/:id", userAuth.authorized, function(req, res) {
 	var projectId = req.params.id;
-	console.log(projectId);
-	db.NewProject.findById(projectId, function(err, foundProject) {
-		currentProject = projectId
+	currentProject = projectId;
+	console.log(currentProject);
+	db.NewProject.findById({_id: projectId}, function(err, foundProject) {
+		
 		console.log(foundProject);
 		res.render("updateproject", {project: foundProject});
 	});
@@ -222,6 +228,24 @@ app.put("/editproject/:id", userAuth.authorized, function(req, res) {
 	})
 });
 
+// Add picture to database
+app.get("/addpicture", function(req, res) {
+	res.render("flicksearch");
+})
+app.post("/addpicture", function(req, res) {
+	console.log("Adding picture" + req.body);
+	db.NewProject.findById({_id: currentProject}, function(err, project) {
+		console.log("The current project is " + project);
+		if(err) {
+			console.log(err);
+		} else {
+			project.pictures.push();
+			project.save();
+			res.json(project);
+		}
+	})
+});
+
 // ****** Delete project ******** //
 app.delete("/deleteproject/:id", function(req, res) {
 	db.NewProject.findOneAndRemove({_id: req.params.id}, function(err, project) {
@@ -229,6 +253,7 @@ app.delete("/deleteproject/:id", function(req, res) {
 		if(err) {
 			console.log(err);
 		} else {
+
 			res.render('projectlist');
 		}
 	});

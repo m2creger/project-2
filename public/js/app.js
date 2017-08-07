@@ -60,10 +60,11 @@ $(document).ready(function() {
 });
 
 function addPictureToDatabase(url) {
+
    $.ajax({
       type: "POST",
-      url: "/",
-
+      url: "/addpicture",
+      data: url,
       success: function() {
         console.log("Success");
       },
