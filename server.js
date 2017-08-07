@@ -13,6 +13,7 @@ var request = require('request');
 var flickr = require('./env.js');
 var zillow = require('./envzillow.js');
 var methodOverride = require("method-override");
+var Yelp = require("yelp");
 
 // Current Project
 var currentProject = "";
@@ -94,13 +95,9 @@ app.post('/supplyadd', function(req, res) {
 	})
 	
 })
-// ** Not sure what this route is ****
-app.get('/newhomeproject', userAuth.authorized, function(req, res) {
-	res.render("newhomeproject");
-})
-
 
 // ***** Search flickr********
+//********************************
 app.get("/flicksearch", function(req, res) {
 	res.render("flicksearch");
 });
@@ -139,10 +136,22 @@ app.get('/flickresults', function(req, res) {
 				//console.log(data);
 				//res.send(results["photos"]);
 				//res.render("results", {data: data});
+				photoResults.length = 0;
 			}
 		}
 	})
 });
+
+// ***** Search yelp********
+//********************************
+
+app.get('yelpsearch', function(req, res) {
+	res.render("flicksearch");
+});
+
+app.get('yelpresults', function(req, res) {
+
+})
 
 // ******** Get all projects for user ********/
 
