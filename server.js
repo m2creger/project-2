@@ -313,10 +313,8 @@ app.post("/addpicture", function(req, res) {
 			res.redirect('/');
 		} else {
 			var userphotos = user.local.userprojects.pictures;
-			userphotos.push(newPicture);
-			console.log("**********THe filtered object is " + filteredObject);
-			filteredObject.budget = updatedCost;
-			console.log(filteredObject.budget);
+			console.log("******* The user photos are " + userphotos);
+			//userphotos.push(newPicture);
 			
 			user.save(function (err, project) {
 	            if (err) {
