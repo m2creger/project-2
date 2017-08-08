@@ -1,28 +1,5 @@
 <% include ./partials/header.ejs %>
-<div class="container">
-  <h2 class="sectionTitles">Kitchen Remodel</h2>
-  <div class="panel panel-default">
-    <div class="panel-body">
-    <% yelpResults.forEach(function(yelp) {
-      <h2><%= %></h2>
-    })
-    
-      <% photoResults.forEach(function(photo) { %>
-        <% if(photo) {%>
-          <% console.log('photo', JSON.stringify(photo, null, '\t')) %>
-          <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-            <a class="thumbnail" href="#">
-              <input type="checkbox" id="myCheckbox1" />
-              <img class="img-responsive" src="<%= photo %>"
-            </a>
-          </div>
-          <% } %>
-        <% }); %>
-      </div>
-    </div>
-  </div>
-</div>
 
+<h3>Yelp Results coming soon </h3>
 
-</div>
 <% include ./partials/footer.ejs %>

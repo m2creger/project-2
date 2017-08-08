@@ -51,7 +51,7 @@ app.use(function (req, res, next) {
 
 });
 
-var photoResults = [];
+
 
 // Home Page
 app.get('/', function(req, res) {
@@ -107,6 +107,7 @@ app.get("/flicksearch", function(req, res) {
 });
 
 app.get('/flickresults', function(req, res) {
+	var photoResults = [];
 	console.log(req.body);
 	var searchTerm = req.query.search;
 	searchTerm = searchTerm.replace(" ", "+");
@@ -168,8 +169,6 @@ app.get('/yelpresults', function(req, res) {
     location: 'san francisco, ca'
   	}).then(response => {
     		
-  			var businessResults = JSON.parse(response.body);
-  			console.log(businessResults);
   			// businessResults.forEach(function(data) {
   			// 	var name = businessResults.name;
   			// 	console.log(name);
