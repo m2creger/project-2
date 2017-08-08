@@ -119,6 +119,8 @@ app.get('/flickresults', function(req, res) {
 		} else {
 			if(response.statusCode == 200) {
 				var data = JSON.parse(body).photos.photo;
+				console.log("*********Flickr data");
+				console.log(data);
 				
 				data.forEach(function(picture) {
 					// Get the data from picture
@@ -154,18 +156,10 @@ app.get('/yelpsearch', function(req, res) {
 });
 
 app.get('/yelpresults', function(req, res) {
+	businessResults = [];
 	var yelpBusinesses = [];
 	console.log("getting yelp results");
-	// yelp.accessToken(yelpCredentials.clientId, yelpCredentials.clientSecret).then(response => {
-	//   console.log(response.jsonBody.access_token);
-	//   const client = yelp.client(response.jsonBody.access_token);
-	//   client.search({
-	//   term:'Starbucks',
-	//   location: 'san francisco, ca'
-	// }).then(response => { console.log(response);});
-	// }).catch(e => {
-	//   console.log(e);
-	// });
+
   yelp.accessToken(yelpCredentials.clientId, yelpCredentials.clientSecret).then(response => {
   const client = yelp.client(response.jsonBody.access_token);
 
@@ -173,14 +167,24 @@ app.get('/yelpresults', function(req, res) {
     term:'Starbucks',
     location: 'san francisco, ca'
   	}).then(response => {
-    		console.log(response);
-
-
+    		
+  			var businessResults = JSON.parse(response.body);
+  			console.log(businessResults);
+  			// businessResults.forEach(function(data) {
+  			// 	var name = businessResults.name;
+  			// 	console.log(name);
+  			// })
+  			
+  			
 		});
 	}).catch(e => {
 	  console.log(e);
    });
-	res.render('yelpresults', )
+   for (var i = 0; i < businessResults.length; i++) {
+  		var businessName = businessResults[i].name;
+  		console.log(businessName);
+  	}
+	res.render('yelpresults');
 		
 });
 
@@ -192,15 +196,6 @@ app.get("/projects", userAuth.authorized, function(req, res) {
 	var currentUserId = currentUser._id;
 	console.log("The current user is " + currentUser);
 
-	// db.NewProject.find({}, function(err, posts) {
-	// 	if(err) {
-	// 		console.log(err)
-	// 	} else {
-	// 		console.log("All of the posts are" + posts);
-	// 		res.render('projectlist', {posts: posts});
-	// 		//{posts: posts, currentUser: req.user}
-	// 	}
-	// })
 	db.User.findById({_id: currentUserId}, function(err, user) {
 		console.log("found user: " + user);
 		if(err) {
@@ -220,11 +215,6 @@ app.post('/projects', userAuth.authorized, function(req, res) {
 	var newIdea = req.body.newIdea;
 	var budget = req.body.budget;
 	console.log(newIdea);
-	//console.log(budget);
-	// var newProjectIdea = new db.NewProject ({
-	// 	newIdea: newIdea,
-	// 	budget: budget
-	// });
 	var newProjectIdea = new db.NewProject({
 		newIdea: newIdea,
 		budget: budget
@@ -245,16 +235,7 @@ app.post('/projects', userAuth.authorized, function(req, res) {
 			res.render("projectdetails");
 		}
 	})
-	// db.NewProject.create(newProjectIdea, function(err, newpost) {
-	// 	if(err) {
-	// 		console.log(err);
-	// 	} else {
-	// 		currentProject = newProjectIdea._id;
-	// 		console.log("The current project is " + currentProject);
-	// 		console.log("The new project post is " + newpost);
-	// 		res.render("projectdetails", currentProject);
-	// 	}
-	// });
+
 	
 });
 
