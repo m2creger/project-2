@@ -261,26 +261,59 @@ app.post('/projects', userAuth.authorized, function(req, res) {
 // ********* edit project *******/
 
 app.get("/editproject/:id", userAuth.authorized, function(req, res) {
+	var currentUserId = currentUser._id;
+	console.log("**************Editing project");
 	var projectId = req.params.id;
 	currentProject = projectId;
 	console.log("The id of the current project being edited is " + currentProject);
-	db.NewProject.findById({_id: projectId}, function(err, foundProject) {
+	db.User.findById({_id: currentUserId}, function(err, user) {
+		console.log("found user: " + user);
+		if(err) {
+			console.log(err);
+			res.redirect('/');
+		} else {
+			var userPosts = user.local.userprojects;
+			var filteredObject = userPosts.filter(function(project){
+				return project._id == projectId;
+			})[0];
+			res.render("updateproject", {project: filteredObject});
+			
 		
-		console.log(foundProject);
-		res.render("updateproject", {project: foundProject});
-	});
+		}
+	})
+	
 });
 
 app.put("/editproject/:id", userAuth.authorized, function(req, res) {
-	console.log(req.body.project);
-	var updatedCost = req.body.cost;
-	var updatedBudget = req.body.budget;
-	db.NewProject.findByIdAndUpdate({_id: req.params.id}, req.body.project, function(err, foundProject) {
-		console.log("Found project to update" + foundProject);
+	console.log("*****************updating project" );
+	console.log(req.body.budget);
+	var currentUserId = currentUser._id;
+	var projectId = req.params.id;
+	var updatedCost = req.body.budget;
+	console.log("Updated cost is " + updatedCost);
+	db.User.findById({_id: currentUserId}, function(err, user) {
+		console.log("found user: " + user);
 		if(err) {
 			console.log(err);
-		} else {
 			res.redirect('/');
+		} else {
+			var userPosts = user.local.userprojects;
+			var filteredObject = userPosts.filter(function(project){
+				return project._id == projectId;
+			})[0];
+			console.log("**********THe filtered object is " + filteredObject);
+			filteredObject.budget = updatedCost;
+			console.log(filteredObject.budget);
+			
+			user.save(function (err, project) {
+	            if (err) {
+	                console.log(err)
+	            } else {
+
+	            	res.redirect("/");
+	            }
+        	});
+		
 		}
 	})
 });
@@ -311,14 +344,36 @@ app.post("/addpicture", function(req, res) {
 
 // ****** Delete project ******** //
 app.delete("/deleteproject/:id", function(req, res) {
-	db.NewProject.findByIdAndRemove({_id: req.params.id}, function(err, deletedProject) {
-		console.log("found project to remove" + deletedProject);
+	console.log("*****************deleting project" );
+	
+	var currentUserId = currentUser._id;
+	var projectId = req.params.id;
+
+	
+	db.User.findById({_id: currentUserId}, function(err, user) {
+		console.log("found user: " + user);
 		if(err) {
 			console.log(err);
-		} else {
 			res.redirect('/');
+		} else {
+			var userPosts = user.local.userprojects;
+			var filteredObject = userPosts.filter(function(project){
+				return project._id == projectId;
+			})[0];
+			console.log("**********THe filtered object is " + filteredObject);
+			var index = userPosts.indexOf(filteredObject);
+			userPosts.splice(index, 1);
+			user.save(function (err, project) {
+	            if (err) {
+	                console.log(err)
+	            } else {
+
+	            	res.redirect("/");
+	            }
+        	});
+		
 		}
-	});
+	})
 });	
 
 var routes = require('./config/routes');
