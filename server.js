@@ -70,14 +70,55 @@ app.get('/projectdetails', function(req, res) {
 	res.render("projectdetails");
 })
 // ** add supplies to project ******
-app.get('/addsupplies', function(req, res) {
+app.get('/addsupplies/:id', function(req, res) {
+	var currentUserId = currentUser._id;
+	var projectId = req.params.id;
 	console.log("The current project is " + currentProject);
-	var projectID = JSON.stringify(currentProject);
-	res.render('addsupplies', {projectID: projectID});
+	db.User.findById({_id: currentUserId}, function(err, user) {
+		console.log("found user: " + user);
+		if(err) {
+			console.log(err);
+		} else {
+			var userprojects = user.local.userprojects;
+			console.log(userprojects);
+			var filteredObject = userprojects.filter(function(project){
+				return project._id == projectId;
+			})[0];
+			console.log("**********THe filtered object in add supplies is " + filteredObject);
+			
+			res.render("addsupplies", {project: filteredObject} );
+		}
+	})
 });
+
+// Show supplies on the project
+
+app.get('/showsupplies/:id', function(req, res) {
+	var currentUserId = currentUser._id;
+	var projectId = req.params.id;
+	console.log("The current project is " + currentProject);
+	db.User.findById({_id: currentUserId}, function(err, user) {
+		console.log("found user: " + user);
+		if(err) {
+			console.log(err);
+		} else {
+			var userprojects = user.local.userprojects;
+			console.log("The user's current projects supplies are " + userprojects.supplies);
+			var filteredObject = userprojects.filter(function(project){
+				return project._id == projectId;
+			})[0];
+			console.log("**********THe filtered object in add supplies is " + filteredObject);
+			
+			res.render("showsupplies");
+		}
+	})
+})
 
 // ****Post supplies to project *****/
 app.put('/supplyadd/:id', function(req, res) {
+	var projectId = req.params.id;
+	console.log("The project id is " + projectId);
+	var currentUserId = currentUser._id;
 	var supply = req.body.supplies;
 	console.log("The supply is " + supply);
 	var cost = req.body.cost;
@@ -87,14 +128,30 @@ app.put('/supplyadd/:id', function(req, res) {
 		cost: cost
 	});
 	console.log("The current project in post supplies is " + currentProject);
-	db.NewProject.findOne({_id: currentProject}, function(err, project) {
-		console.log(project);
+	
+	db.User.findById({_id: currentUserId}, function(err, user) {
+		console.log("found user: " + user);
 		if(err) {
-			console.log(err)
+			console.log(err);
+			res.redirect('/');
 		} else {
-			project.supplies.push(newSupply);
-			project.save();
-			res.render('suppliesdone');
+			var userprojects = user.local.userprojects;
+			console.log(userprojects);
+			var filteredObject = userprojects.filter(function(project){
+				return project._id == projectId;
+			})[0];
+			console.log("**********THe filtered object is " + filteredObject);
+			//filteredObject.supplies.push(updatedCost);
+			
+			user.save(function (err, project) {
+	            if (err) {
+	                console.log(err)
+	            } else {
+
+	            	res.redirect("/projects");
+	            }
+        	});
+		
 		}
 	})
 	
@@ -243,7 +300,7 @@ app.get("/editproject/:id", userAuth.authorized, function(req, res) {
 	var currentUserId = currentUser._id;
 	console.log("**************Editing project");
 	var projectId = req.params.id;
-	currentProject = projectId;
+
 	console.log("The id of the current project being edited is " + currentProject);
 	db.User.findById({_id: currentUserId}, function(err, user) {
 		console.log("found user: " + user);
@@ -262,6 +319,30 @@ app.get("/editproject/:id", userAuth.authorized, function(req, res) {
 	})
 	
 });
+
+/********** Add pictures *********/
+app.get("/addpicturestoproject/:id", function(req, res) {
+	var currentUserId = currentUser._id;
+	console.log("**************Editing project");
+	var projectId = req.params.id;
+
+	console.log("The id of the current project being edited is " + currentProject);
+	db.User.findById({_id: currentUserId}, function(err, user) {
+		console.log("found user: " + user);
+		if(err) {
+			console.log(err);
+			res.redirect('/');
+		} else {
+			var userPosts = user.local.userprojects;
+			var filteredObject = userPosts.filter(function(project){
+				return project._id == projectId;
+			})[0];
+			res.render("flicksearch", {project: filteredObject});
+			
+		
+		}
+	})
+})
 
 app.put("/editproject/:id", userAuth.authorized, function(req, res) {
 	console.log("*****************updating project" );
@@ -327,17 +408,7 @@ app.post("/addpicture", function(req, res) {
 		
 		}
 	})
-	// db.NewProject.findById({_id: currentProject}, function(err, project) {
-	// 	console.log("The current project is " + project);
-	// 	if(err) {
-	// 		console.log(err);
-	// 	} else {
-	// 		project.pictures.push();
-	// 		project.save();
-	// 		console.log("project was saved");
-	// 		res.json(project);
-	// 	}
-	// })
+
 });
 
 // ****** Delete project ******** //

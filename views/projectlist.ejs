@@ -1,28 +1,25 @@
+
 <% include ./partials/header.ejs %>
 
 <h3>Project list</h3>
 <div class="card-group">
-  <% console.log('the posts being shown are', JSON.stringify(posts, null, '\t')) %>
-  <% for (var i = 0; i < posts.length; i++) { %>
-    <div class="card" style="width: 20rem;">
 
-        <img class="card-img-top" src="https://farm5.staticflickr.com/4360/36398288126_c4bd94bc33.jpg">
-    
-      <div class="card-block">
+    <% for(var i=0; i < posts.length; i++) { %>
+      <div class="card" style="width: 20rem;">
+        <div class="card-block">
         <h4 class="card-title"><%= posts[i].newIdea %></h4>
-        <h4></h4>
         <ul class="list-group list-group-flush">
-         
-            <li class="list-group-item"><%= posts[i].supplies %></li>
-         
+     
         </ul>
         <a href="/editproject/<%= posts[i]._id %>" class="btn btn-primary">Edit Project</a>
-        <form action="/deleteproject/<%= posts[i]._id %>?_method=DELETE" method="POST">
-          <button class="">Delete</div></button>
-        </form>
+        <a href="/showsupplies/<%= posts[i]._id %>" class="btn btn-primary">Show Supplies</a>
+        <a href="/addpicturestoproject/<%= posts[i]._id %>" class="btn btn-primary">Look for ideas</a>
+          <form action="/deleteproject/<%= posts[i]._id %>?_method=DELETE" method="POST">
+            <button class="">Delete</div></button>
+          </form>
+        </div>
       </div>
-  </div>
-  <% } %>
-  
+    <% } %>   
+
 </div>
 <% include ./partials/footer.ejs %>

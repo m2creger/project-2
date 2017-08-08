@@ -8,5 +8,5 @@ module.exports.User = require("./user.js");
 module.exports.NewProject = require("./newproject.js");
 module.exports.Supply = require("./supplies.js");
 module.exports.Picture = require("./pictures.js");
-module.exports.Flickr = require("../env.js");
-module.exports.Yelp = require("../envzillow.js");
+//module.exports.Flickr = require("../env.js");
+//module.exports.Yelp = require("../envzillow.js");

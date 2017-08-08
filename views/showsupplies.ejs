@@ -1,0 +1,8 @@
+
+<% include ./partials/header.ejs %>
+
+<% for (var i = 0; i < posts.supplies.length; i++) { %>
+    <li class="list-group-item"><%= posts[i].supplies %></li>
+<% } %>
+
+<% include ./partials/footer.ejs %>
