@@ -6,17 +6,16 @@
   <div class="row">
    
       <div class="col-lg-12">
-      <% photoResults.forEach(function(photo) { %>
-        <% if(photo) {%>
-          <% console.log('photo', JSON.stringify(photo, null, '\t')) %>
+      <% for(var i = 0; i < photoResults.length; i++) { %>
+    
           <div class="col-lg-3 col-md-4 col-xs-6 thumb">
             <a class="thumbnail" href="#">
               <input type="checkbox" id="myCheckbox1" />
-              <img class="img-responsive" src="<%= photo %>"
+              <img class="img-responsive" src="<%= photoResults[i] %>"
             </a>
           </div>
-          <% } %>
-        <% }); %>
+          
+        <% } %>
       </div>
   
    </div> 

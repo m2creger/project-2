@@ -11,9 +11,9 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var request = require('request');
 var flickr = require('./env.js');
-var zillow = require('./envzillow.js');
+var yelpCredentials = require('./envzillow.js');
 var methodOverride = require("method-override");
-var Yelp = require("yelp");
+var yelp = require("yelp-fusion");
 
 // Current Project
 var currentProject = "";
@@ -117,6 +117,7 @@ app.get('/flickresults', function(req, res) {
 		} else {
 			if(response.statusCode == 200) {
 				var data = JSON.parse(body).photos.photo;
+				console.log(data.length);
 				data.forEach(function(picture) {
 					// Get the data from picture
 					var farm = picture.farm;
@@ -130,14 +131,15 @@ app.get('/flickresults', function(req, res) {
 					photoResults.push(newPhotoURL);
 					
 				});
+				console.log("Current photo results are " + photoResults);
 				//console.log(photoResults);
-				
 				res.render("flickresults", {photoResults: photoResults});
+				
 				//console.log(data);
 				//res.send(results["photos"]);
 				//res.render("results", {data: data});
 				photoResults.length = 0;
-				console.log("Current photo results are " + photoResults);
+				
 			}
 		}
 	})
@@ -146,13 +148,40 @@ app.get('/flickresults', function(req, res) {
 // ***** Search yelp********
 //********************************
 
-app.get('yelpsearch', function(req, res) {
-	res.render("flicksearch");
+app.get('/yelpsearch', function(req, res) {
+	res.render("yelpsearch");
 });
 
-app.get('yelpresults', function(req, res) {
+app.get('/yelpresults', function(req, res) {
+	var yelpBusinesses = [];
+	console.log("getting yelp results");
+	// yelp.accessToken(yelpCredentials.clientId, yelpCredentials.clientSecret).then(response => {
+	//   console.log(response.jsonBody.access_token);
+	//   const client = yelp.client(response.jsonBody.access_token);
+	//   client.search({
+	//   term:'Starbucks',
+	//   location: 'san francisco, ca'
+	// }).then(response => { console.log(response);});
+	// }).catch(e => {
+	//   console.log(e);
+	// });
+  yelp.accessToken(yelpCredentials.clientId, yelpCredentials.clientSecret).then(response => {
+  const client = yelp.client(response.jsonBody.access_token);
 
-})
+  client.search({
+    term:'Starbucks',
+    location: 'san francisco, ca'
+  	}).then(response => {
+    		console.log(response);
+
+
+		});
+	}).catch(e => {
+	  console.log(e);
+   });
+	res.render('yelpresults', )
+		
+});
 
 // ******** Get all projects for user ********/
 
@@ -188,27 +217,29 @@ app.post('/projects', userAuth.authorized, function(req, res) {
 	};
 	
 	console.log(newProjectIdea);
-	console.log("The current user is " + currentUser);
-	// db.User.findById({_id: currentUser}, function(err, user) {
-	// 	console.log("found user" + user);
-	// 	if(err) {
-	// 		console.log(err);
-	// 	} else {
-	// 		user.userprojects.push(newProjectIdea);
-			
-	// 		res.render("projectdetails");
-	// 	}
-	// })
-	db.NewProject.create(newProjectIdea, function(err, newpost) {
+	var currentUserId = currentUser._id;
+	console.log("The current user is " + currentUserId);
+	db.User.findById({_id: currentUserId}, function(err, user) {
+		console.log("found user: " + user);
 		if(err) {
 			console.log(err);
 		} else {
-			currentProject = newProjectIdea._id;
-			console.log("The current project is " + currentProject);
-			console.log("The new project post is " + newpost);
-			res.render("projectdetails", currentProject);
+			console.log(user.userprojects);
+			//user.userprojects.push(newProjectIdea);
+			
+			res.render("projectdetails");
 		}
-	});
+	})
+	// db.NewProject.create(newProjectIdea, function(err, newpost) {
+	// 	if(err) {
+	// 		console.log(err);
+	// 	} else {
+	// 		currentProject = newProjectIdea._id;
+	// 		console.log("The current project is " + currentProject);
+	// 		console.log("The new project post is " + newpost);
+	// 		res.render("projectdetails", currentProject);
+	// 	}
+	// });
 	
 });
 
@@ -234,7 +265,7 @@ app.put("/editproject/:id", userAuth.authorized, function(req, res) {
 		if(err) {
 			console.log(err);
 		} else {
-			res.render('projectlist');
+			res.redirect('/');
 		}
 	})
 });
