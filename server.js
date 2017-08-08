@@ -71,13 +71,17 @@ app.get('/projectdetails', function(req, res) {
 })
 // ** add supplies to project ******
 app.get('/addsupplies', function(req, res) {
-	res.render('addsupplies');
+	console.log("The current project is " + currentProject);
+	var projectID = JSON.stringify(currentProject);
+	res.render('addsupplies', {projectID: projectID});
 });
 
 // ****Post supplies to project *****/
-app.post('/supplyadd', function(req, res) {
+app.put('/supplyadd/:id', function(req, res) {
 	var supply = req.body.supplies;
+	console.log("The supply is " + supply);
 	var cost = req.body.cost;
+	console.log("The supply cost is " + cost);
 	var newSupply = new db.Supply ({
 		supplyName: supply,
 		cost: cost
@@ -185,14 +189,27 @@ app.get('/yelpresults', function(req, res) {
 app.get("/projects", userAuth.authorized, function(req, res) {
 	console.log("the user is" + req.user);
 	currentUser = req.user;
+	var currentUserId = currentUser._id;
 	console.log("The current user is " + currentUser);
-	db.NewProject.find({}, function(err, posts) {
+
+	// db.NewProject.find({}, function(err, posts) {
+	// 	if(err) {
+	// 		console.log(err)
+	// 	} else {
+	// 		console.log("All of the posts are" + posts);
+	// 		res.render('projectlist', {posts: posts});
+	// 		//{posts: posts, currentUser: req.user}
+	// 	}
+	// })
+	db.User.findById({_id: currentUserId}, function(err, user) {
+		console.log("found user: " + user);
 		if(err) {
-			console.log(err)
+			console.log(err);
 		} else {
-			console.log("All of the posts are" + posts);
-			res.render('projectlist', {posts: posts});
-			//{posts: posts, currentUser: req.user}
+			var userPosts = user.local.userprojects;
+			console.log("The user posts are " + userPosts);
+			
+			res.render("projectlist", {posts: userPosts} );
 		}
 	})
 })
@@ -221,8 +238,9 @@ app.post('/projects', userAuth.authorized, function(req, res) {
 		if(err) {
 			console.log(err);
 		} else {
-			console.log(user.userprojects);
 			user.local.userprojects.push(newProjectIdea);
+			currentProject = newProjectIdea._id;
+			console.log("The current project is " + currentProject);
 			user.save();
 			res.render("projectdetails");
 		}
@@ -245,7 +263,7 @@ app.post('/projects', userAuth.authorized, function(req, res) {
 app.get("/editproject/:id", userAuth.authorized, function(req, res) {
 	var projectId = req.params.id;
 	currentProject = projectId;
-	console.log(currentProject);
+	console.log("The id of the current project being edited is " + currentProject);
 	db.NewProject.findById({_id: projectId}, function(err, foundProject) {
 		
 		console.log(foundProject);

@@ -1,5 +1,5 @@
 <% include ./partials/header.ejs %>
-<form action="/supplyadd" method="POST">
+<form action="/supplyadd/<%= projectID %>?_method=PUT" method="POST">
   <div class="form-group" class="newSupplies">
 	    <label for="supplies">Supplies</label>
 	    <input class="form-control" type="text" name="supplies" id="suppliesField" placeholder="Supplies needed">
