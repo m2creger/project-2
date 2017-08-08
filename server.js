@@ -110,43 +110,44 @@ app.get('/flickresults', function(req, res) {
 	var photoResults = [];
 	console.log(req.body);
 	var searchTerm = req.query.search;
-	searchTerm = searchTerm.replace(" ", "+");
-	console.log(searchTerm);
-	var url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + flickr.apiKey + "&text=" + searchTerm +"&format=json&nojsoncallback=1";
-	request(url, function(error, response, body) {
-		if(error) {
-			console.log("Something went wrong");
-			
-		} else {
-			if(response.statusCode == 200) {
-				var data = JSON.parse(body).photos.photo;
-				console.log("*********Flickr data");
-				console.log(data);
+	if (searchTerm) {
+			searchTerm = searchTerm.replace(" ", "+");
+			console.log(searchTerm);
+			var url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + flickr.apiKey + "&text=" + searchTerm +"&format=json&nojsoncallback=1";
+			request(url, function(error, response, body) {
+			if(error) {
+				console.log("Something went wrong");
 				
-				data.forEach(function(picture) {
-					// Get the data from picture
-					var farm = picture.farm;
-					var server = picture.server;
-					var photoID = picture.id;
-					var secret = picture.secret;
+			} else {
+				if(response.statusCode == 200) {
+					var data = JSON.parse(body).photos.photo;
+					console.log("*********Flickr data");
+					console.log(data);
 					
-					var newPhotoURL = "https://farm" + farm + "." + "staticflickr.com/" + server+ "/" + photoID + "_"  + secret + ".jpg";
+					data.forEach(function(picture) {
+						// Get the data from picture
+						var farm = picture.farm;
+						var server = picture.server;
+						var photoID = picture.id;
+						var secret = picture.secret;
+						
+						var newPhotoURL = "https://farm" + farm + "." + "staticflickr.com/" + server+ "/" + photoID + "_"  + secret + ".jpg";
+						
+						photoResults.push(newPhotoURL);
+						
+					});
 					
-					photoResults.push(newPhotoURL);
+					res.render("flickresults", {photoResults: photoResults});
 					
-				});
-				//console.log("Current photo results are " + photoResults);
-				//console.log(photoResults);
-				res.render("flickresults", {photoResults: photoResults});
-				
-				//console.log(data);
-				//res.send(results["photos"]);
-				//res.render("results", {data: data});
-				photoResults.length = 0;
-				
+					photoResults.length = 0;
+					
+				}
 			}
-		}
-	})
+		})
+	} else {
+		res.redirect('/flicksearch');
+	}
+	
 });
 
 // ***** Search yelp********
@@ -168,6 +169,7 @@ app.get('/yelpresults', function(req, res) {
     term:'Starbucks',
     location: 'san francisco, ca'
   	}).then(response => {
+  		console.log(response);
     		
   			// businessResults.forEach(function(data) {
   			// 	var name = businessResults.name;
@@ -179,10 +181,7 @@ app.get('/yelpresults', function(req, res) {
 	}).catch(e => {
 	  console.log(e);
    });
-   for (var i = 0; i < businessResults.length; i++) {
-  		var businessName = businessResults[i].name;
-  		console.log(businessName);
-  	}
+ 
 	res.render('yelpresults');
 		
 });
@@ -299,27 +298,48 @@ app.put("/editproject/:id", userAuth.authorized, function(req, res) {
 });
 
 // Add picture to database
-app.get("/addpicture", function(req, res) {
-	res.render("flicksearch");
-})
+
 app.post("/addpicture", function(req, res) {
 	var pictureURL = req.body.name;
-
+	var currentUserId = currentUser._id;
 	var newPicture = new db.Picture({
 		url: pictureURL 
 	});
 	console.log("The new picture being added is " + newPicture);
-	db.NewProject.findById({_id: currentProject}, function(err, project) {
-		console.log("The current project is " + project);
+	db.User.findById({_id: currentUserId}, function(err, user) {
+		console.log("found user: " + user);
 		if(err) {
 			console.log(err);
+			res.redirect('/');
 		} else {
-			project.pictures.push();
-			project.save();
-			console.log("project was saved");
-			res.json(project);
+			var userphotos = user.local.userprojects.pictures;
+			userphotos.push(newPicture);
+			console.log("**********THe filtered object is " + filteredObject);
+			filteredObject.budget = updatedCost;
+			console.log(filteredObject.budget);
+			
+			user.save(function (err, project) {
+	            if (err) {
+	                console.log(err)
+	            } else {
+
+	            	res.redirect("/");
+	            }
+        	});
+		
 		}
 	})
+	// db.NewProject.findById({_id: currentProject}, function(err, project) {
+	// 	console.log("The current project is " + project);
+	// 	if(err) {
+	// 		console.log(err);
+	// 	} else {
+	// 		project.pictures.push();
+	// 		project.save();
+	// 		console.log("project was saved");
+	// 		res.json(project);
+	// 	}
+	// })
 });
 
 // ****** Delete project ******** //
