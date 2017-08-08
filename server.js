@@ -108,16 +108,14 @@ app.get('/flickresults', function(req, res) {
 	searchTerm = searchTerm.replace(" ", "+");
 	console.log(searchTerm);
 	var url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + flickr.apiKey + "&text=" + searchTerm +"&format=json&nojsoncallback=1";
-	console.log(url);
-	console.log("the flickr key is " +  flickr.apiKey);
 	request(url, function(error, response, body) {
 		if(error) {
 			console.log("Something went wrong");
-			console.log("error");
+			
 		} else {
 			if(response.statusCode == 200) {
 				var data = JSON.parse(body).photos.photo;
-				console.log(data.length);
+				
 				data.forEach(function(picture) {
 					// Get the data from picture
 					var farm = picture.farm;
@@ -126,12 +124,11 @@ app.get('/flickresults', function(req, res) {
 					var secret = picture.secret;
 					
 					var newPhotoURL = "https://farm" + farm + "." + "staticflickr.com/" + server+ "/" + photoID + "_"  + secret + ".jpg";
-					//console.log("New photo url");
-					//console.log(newPhotoURL);
+					
 					photoResults.push(newPhotoURL);
 					
 				});
-				console.log("Current photo results are " + photoResults);
+				//console.log("Current photo results are " + photoResults);
 				//console.log(photoResults);
 				res.render("flickresults", {photoResults: photoResults});
 				
@@ -211,10 +208,10 @@ app.post('/projects', userAuth.authorized, function(req, res) {
 	// 	newIdea: newIdea,
 	// 	budget: budget
 	// });
-	var newProjectIdea = {
+	var newProjectIdea = new db.NewProject({
 		newIdea: newIdea,
 		budget: budget
-	};
+	});
 	
 	console.log(newProjectIdea);
 	var currentUserId = currentUser._id;
@@ -225,8 +222,8 @@ app.post('/projects', userAuth.authorized, function(req, res) {
 			console.log(err);
 		} else {
 			console.log(user.userprojects);
-			//user.userprojects.push(newProjectIdea);
-			
+			user.local.userprojects.push(newProjectIdea);
+			user.save();
 			res.render("projectdetails");
 		}
 	})
