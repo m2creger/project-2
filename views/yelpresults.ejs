@@ -1,5 +1,28 @@
 <% include ./partials/header.ejs %>
 
-<h3>Yelp Results coming soon </h3>
+<div class="container-fluid">
+  <div class="row">
+  	<% for(var i = 0; i < businesses.length; i++) { %>
+  		<div class="card col-xs-6 col-md-6 col-lg-6" style="width: 20rem;">
+		  <img class="img-fluid" src="<%= businesses[i].imageURL %>" alt="Card image cap">
+		  <div class="card-block">
+		    <h4 class="card-title"><%= businesses[i].name %></h4>
+		  
+		  </div>
+		  <ul class="list-group list-group-flush">
+		    <li class="list-group-item"><%= businesses[i].city%></li>
+		    <li class="list-group-item"><%= businesses[i].state %></li>
+		    <li class="list-group-item"><%= businesses[i].phone %></li>
+		    <li class="list-group-item">Yelp Rating <%= businesses[i].rating %></li>
+		  </ul>
+		  <div class="card-block">
+		    <a href="#" class="card-link">Card link</a>
+		    <a href="#" class="card-link">Another link</a>
+		  </div>
+		</div>
+     
+	 <% } %>
+   </div> 
+</div>
 
 <% include ./partials/footer.ejs %>

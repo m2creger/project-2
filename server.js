@@ -172,34 +172,35 @@ app.get('/flickresults', function(req, res) {
 			console.log(searchTerm);
 			var url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + flickr.apiKey + "&text=" + searchTerm +"&format=json&nojsoncallback=1";
 			request(url, function(error, response, body) {
-			if(error) {
-				console.log("Something went wrong");
-				
-			} else {
-				if(response.statusCode == 200) {
-					var data = JSON.parse(body).photos.photo;
-					console.log("*********Flickr data");
-					console.log(data);
+				console.log("The flickr results body is " + body);
+				if(error) {
+					//console.log("Something went wrong");
 					
-					data.forEach(function(picture) {
-						// Get the data from picture
-						var farm = picture.farm;
-						var server = picture.server;
-						var photoID = picture.id;
-						var secret = picture.secret;
+				} else {
+					if(response.statusCode == 200) {
+						var data = JSON.parse(body).photos.photo;
+						console.log("*********Flickr data");
+						console.log(data);
 						
-						var newPhotoURL = "https://farm" + farm + "." + "staticflickr.com/" + server+ "/" + photoID + "_"  + secret + ".jpg";
+						data.forEach(function(picture) {
+							// Get the data from picture
+							var farm = picture.farm;
+							var server = picture.server;
+							var photoID = picture.id;
+							var secret = picture.secret;
+							
+							var newPhotoURL = "https://farm" + farm + "." + "staticflickr.com/" + server+ "/" + photoID + "_"  + secret + ".jpg";
+							
+							photoResults.push(newPhotoURL);
+							
+						});
 						
-						photoResults.push(newPhotoURL);
+						res.render("flickresults", {photoResults: photoResults});
 						
-					});
-					
-					res.render("flickresults", {photoResults: photoResults});
-					
-					photoResults.length = 0;
-					
+						photoResults.length = 0;
+						
+					}
 				}
-			}
 		})
 	} else {
 		res.redirect('/flicksearch');
@@ -215,10 +216,30 @@ app.get('/yelpsearch', function(req, res) {
 });
 
 app.get('/yelpresults', function(req, res) {
+	var yelpResultsParse;
+	var yelpSecretKey;
+	// if (process.env.yelpSecretKey) {
+	//   yelpSecretKey = process.env.yelpSecretKey;
+	//     console.log("The yelp secret key is" + yelpSecretKey);
+	// } else {
+	//   var env = require('./env.js');
+	//   yelpSecretKey = env.name;
+	//     console.log("The yelp secret key is" + yelpSecretKey);
+	// }
+	// var yelpClientId;
+	// if (process.env.yelpClientId) {
+	//   yelpSecretKey = process.env.yelpClientId;
+	//     console.log(yelpSecretKey);
+	// } else {
+	//   var env = require('./env.js');
+	//   yelpSecretKey = env.name;
+	//     console.log(yelpSecretKey);
+	// }
 	businessResults = [];
 	var yelpBusinesses = [];
 	console.log("getting yelp results");
 
+ 
   yelp.accessToken(yelpCredentials.clientId, yelpCredentials.clientSecret).then(response => {
   const client = yelp.client(response.jsonBody.access_token);
 
@@ -226,22 +247,56 @@ app.get('/yelpresults', function(req, res) {
     term:'Starbucks',
     location: 'san francisco, ca'
   	}).then(response => {
-  		console.log(response);
-    		
+  		var yelpResponseBody = response.body;
+  		
+  		yelpResultsParse = yelpParse(yelpResponseBody);
+    	console.log("The yelp results parse is " + yelpResultsParse);
   			// businessResults.forEach(function(data) {
   			// 	var name = businessResults.name;
   			// 	console.log(name);
   			// })
   			
-  			
-		});
+  		res.render('yelpresults', { businesses: yelpResultsParse});
+		})
 	}).catch(e => {
 	  console.log(e);
-   });
- 
-	res.render('yelpresults');
+   	});
+   	
+ 	//res.render('tempyelpresults');
+	
 		
 });
+
+function yelpParse(yelpResults) {
+	var yelpResultsArray = [];
+	var yelpArray = JSON.parse(yelpResults);
+	console.log(yelpArray);
+	var yelpBusinesses = yelpArray.businesses;
+	console.log("The yelp businesses are " + yelpBusinesses);
+	for (var i = 0; i < yelpBusinesses.length; i++ ) {
+		var name = yelpBusinesses[i].name;
+		console.log(name);
+		var city = yelpBusinesses[i].location.city;
+		var state = yelpBusinesses[i].location.state;
+		var phone = yelpBusinesses[i].phone;
+		var rating = yelpBusinesses[i].rating;
+		var imageURL = yelpBusinesses[i].image_url;
+		var newBusiness = {
+			name: name,
+			city: city,
+			state: state,
+			phone: phone,
+			rating: rating,
+			imageURL: imageURL
+		}
+		//console.log(newBusiness);
+		yelpResultsArray.push(newBusiness);
+	}
+	//console.log(yelpResultsArray);
+	
+	return yelpResultsArray;
+	//console.log(yelpResults);
+}
 
 // ******** Get all projects for user ********/
 
