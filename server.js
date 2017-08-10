@@ -38,8 +38,48 @@ app.use(passport.initialize());
 app.use(passport.session()); 
 app.use(flash()); 
 app.use(methodOverride("_method"))
+var yelpSecretKey;
+var yelpClientId;
+var flickrKey;
+var flickrSecretKey;
 
+function setConfigVariables() {
+	if (process.env.yelpSecretKey) {
+	  yelpSecretKey = yelpSecretKey;
+	  console.log("The yelp secret key is" + yelpSecretKey);
+	} else {
+	  var env = require('./env.js');
+	  yelpSecretKey = env.name;
+	    console.log("The yelp secret key is" + yelpSecretKey);
+	}
+	
+	if (process.env.yelpClientId) {
+	  yelpClientId = yelpClientId;
+	  console.log(yelpClientId);
+	} else {
+	  var env = require('./env.js');
+	  yelpClientId = env.name;
+	  console.log(yelpClientId);
+	}
+	if (process.env.flickrKey) {
+	  flickrKey = flickrKey;
+	  console.log(flickrKey);
+	} else {
+	  var env = require('./env.js');
+	  flickrKey = env.name;
+	  console.log(flickrKey);
+	}
+	if (process.env.flickrSecretKey) {
+	  flickrSecretKey = flickrSecretKey;
+	  console.log(flickrSecretKey);
+	} else {
+	  var env = require('./env.js');
+	  flickrSecretKey = env.name;
+	  console.log(flickrSecretKey);
+	}
+}
 
+setConfigVariables();
 
 require('./config/passport')(passport);
 
@@ -218,23 +258,7 @@ app.get('/yelpsearch', function(req, res) {
 app.get('/yelpresults', function(req, res) {
 	var yelpResultsParse;
 	var yelpSecretKey;
-	// if (process.env.yelpSecretKey) {
-	//   yelpSecretKey = process.env.yelpSecretKey;
-	//     console.log("The yelp secret key is" + yelpSecretKey);
-	// } else {
-	//   var env = require('./env.js');
-	//   yelpSecretKey = env.name;
-	//     console.log("The yelp secret key is" + yelpSecretKey);
-	// }
-	// var yelpClientId;
-	// if (process.env.yelpClientId) {
-	//   yelpSecretKey = process.env.yelpClientId;
-	//     console.log(yelpSecretKey);
-	// } else {
-	//   var env = require('./env.js');
-	//   yelpSecretKey = env.name;
-	//     console.log(yelpSecretKey);
-	// }
+
 	businessResults = [];
 	var yelpBusinesses = [];
 	console.log("getting yelp results");

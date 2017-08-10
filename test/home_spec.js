@@ -6,7 +6,7 @@ var responseData;
 var flickr = require('./env.js');
 
 var url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + flickr.apiKey + "&text=home&format=json&nojsoncallback=1";;
-describe("shakes", function() {
+describe("home", function() {
 	
 	before(function(done) {
 		request(url, function(error, response, body) {
@@ -25,7 +25,7 @@ describe("shakes", function() {
 		
 		done();
 	});
-	it("should have a sentence in the body", function(done) {
+	it("should objects in the body", function(done) {
 		console.log("bodyData");
 		if (typeof(bodyData) === "string") {
 			bodyData = JSON.parse(bodyData);
