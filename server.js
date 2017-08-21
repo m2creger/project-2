@@ -10,7 +10,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var request = require('request');
-var yelpCredentials = require('./envzillow.js');
+
 var methodOverride = require("method-override");
 var yelp = require("yelp-fusion");
 var yelpClientId = process.env.yelpClientId || require('./env.js').yelpClientId;
