@@ -1,0 +1,18 @@
+<% include ./partials/header.ejs %>
+
+<h4>Project Picture Results</h4>
+<a class="btn btn-default" href="/projects" role="button">Back to projects</a>
+<div class="container-fluid">
+  <div class="row">
+  	<% for(var i = 0; i < pictures.length; i++) { %>
+     
+      <div class="col-xs-6 col-md-6 col-lg-6">
+      	<img class="img-thumbnail" src="<%= pictures[i].url %>"/>
+      </div>
+
+	 <% } %>
+   </div> 
+</div>
+
+
+<% include ./partials/footer.ejs %>

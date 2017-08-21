@@ -1,4 +1,6 @@
 <% include ./partials/header.ejs %>
+<h4>Project Supplies</h4>
+<a class="btn btn-default" href="/projects" role="button">Back to projects</a>
 <form action="/supplyadd/<%= project._id %>?_method=PUT" method="POST">
   <div class="form-group" class="newSupplies">
 	    <label for="supplies">Supplies</label>

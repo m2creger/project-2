@@ -18,21 +18,7 @@ $(document).ready(function() {
 
     });
 	});
-  $('#newProProject').on('click', function(event) {
-    event.preventDefault();
-    console.log("new pro project");
-    $.ajax({
-      type: "GET",
-      url: "/newpro",
-      success: function() {
-        console.log("Success");
-      },
-      error: function() {
-        console.log("error posting form data")
-      }
-
-    });
-  });
+ 
   $('#addSupplies').on('click', function(event) {
     event.preventDefault();
     //console.log(this);
@@ -60,12 +46,12 @@ $(document).ready(function() {
 });
 
 function addPictureToDatabase(url) {
-  //var datastring = 'name=' + url;
+  // var datastring = "&url=" + url;
   //console.log(datastring);
    $.ajax({
       type: "POST",
       url: "/addpicture",
-      data: url,
+      data: {url: url},
       dataType: "json",
       success: function() {
         console.log("Success");

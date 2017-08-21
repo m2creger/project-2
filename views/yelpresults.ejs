@@ -4,7 +4,6 @@
   <div class="row">
   	<% for(var i = 0; i < businesses.length; i++) { %>
   		<div class="card col-xs-6 col-md-6 col-lg-6" style="width: 20rem;">
-		  <img class="img-fluid" src="<%= businesses[i].imageURL %>" alt="Card image cap">
 		  <div class="card-block">
 		    <h4 class="card-title"><%= businesses[i].name %></h4>
 		  
@@ -16,8 +15,8 @@
 		    <li class="list-group-item">Yelp Rating <%= businesses[i].rating %></li>
 		  </ul>
 		  <div class="card-block">
-		    <a href="#" class="card-link">Card link</a>
-		    <a href="#" class="card-link">Another link</a>
+		    <a href="/savecontractor" class="card-link">Save Contractor</a>
+		
 		  </div>
 		</div>
      

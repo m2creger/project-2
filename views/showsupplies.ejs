@@ -1,8 +1,20 @@
 
 <% include ./partials/header.ejs %>
 
-<% for (var i = 0; i < posts.supplies.length; i++) { %>
-    <li class="list-group-item"><%= posts[i].supplies %></li>
+<%if (supplies.length === 0) { %>
+	<div class="container">
+		<h3>No current supplies for this project</h3>
+	<div>
+<% } else { %>
+	<% for (var i = 0; i < supplies.length; i++) { %>
+		<div class="container">
+			<ul>
+				<li class="list-group-item"><%= supplies[i].supplyName %></li>
+    			<li class="list-group-item"><%= supplies[i].cost %></li>
+			</ul>
+		</div>
+		
+	<% } %>
 <% } %>
 
 <% include ./partials/footer.ejs %>

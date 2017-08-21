@@ -14,9 +14,13 @@ var flickr = require('./env.js');
 var yelpCredentials = require('./envzillow.js');
 var methodOverride = require("method-override");
 var yelp = require("yelp-fusion");
+var yelpClientId = process.env.yelpClientId || require('./env.js').yelpClientId;
+var yelpSecretKey = process.env.yelpSecretKey || require('./env.js').yelpClientSecret
+var flickApiKey = process.env.flickrKey || require('./env.js').flickrApiKey;
+var flickSecretKey = process.env.flickrSecretKey || require('./env.js').flickrSecretKey;
 
 // Current Project
-var currentProject = "";
+var currentProject;
 var currentUser = "";
 
 var db = require("./models")
@@ -33,53 +37,12 @@ app.set('view engine', 'ejs');
 
 app.use(express.static(__dirname + '/public'));
 
-app.use(session({ secret: 'WDI-GENERAL-ASSEMBLY-EXPRESS' }));  
+app.use(session({ secret: 'HOME AWESOMENESS' }));  
 app.use(passport.initialize());
 app.use(passport.session()); 
 app.use(flash()); 
 app.use(methodOverride("_method"))
-var yelpSecretKey;
-var yelpClientId;
-var flickrKey;
-var flickrSecretKey;
 
-function setConfigVariables() {
-	if (process.env.yelpSecretKey) {
-	  yelpSecretKey = yelpSecretKey;
-	  console.log("The yelp secret key is" + yelpSecretKey);
-	} else {
-	  var env = require('./env.js');
-	  yelpSecretKey = env.name;
-	    console.log("The yelp secret key is" + yelpSecretKey);
-	}
-	
-	if (process.env.yelpClientId) {
-	  yelpClientId = yelpClientId;
-	  console.log(yelpClientId);
-	} else {
-	  var env = require('./env.js');
-	  yelpClientId = env.name;
-	  console.log(yelpClientId);
-	}
-	if (process.env.flickrKey) {
-	  flickrKey = flickrKey;
-	  console.log(flickrKey);
-	} else {
-	  var env = require('./env.js');
-	  flickrKey = env.name;
-	  console.log(flickrKey);
-	}
-	if (process.env.flickrSecretKey) {
-	  flickrSecretKey = flickrSecretKey;
-	  console.log(flickrSecretKey);
-	} else {
-	  var env = require('./env.js');
-	  flickrSecretKey = env.name;
-	  console.log(flickrSecretKey);
-	}
-}
-
-setConfigVariables();
 
 require('./config/passport')(passport);
 
@@ -91,24 +54,20 @@ app.use(function (req, res, next) {
 
 });
 
-
-
 // Home Page
+
 app.get('/', function(req, res) {
 	res.render("index");
 });
 
 // ************start new project**********/
+
 app.get('/newproject', userAuth.authorized, function(req, res) {
 	
 	res.render("newproject");
 });
 
-// ************ Add project details ******/
-app.get('/projectdetails', function(req, res) {
-	console.log(req.params.id);
-	res.render("projectdetails");
-})
+
 // ** add supplies to project ******
 app.get('/addsupplies/:id', function(req, res) {
 	var currentUserId = currentUser._id;
@@ -148,8 +107,36 @@ app.get('/showsupplies/:id', function(req, res) {
 				return project._id == projectId;
 			})[0];
 			console.log("**********THe filtered object in add supplies is " + filteredObject);
-			
-			res.render("showsupplies");
+			var projectSupplies = filteredObject.supplies;
+			console.log("************Showing supplies");
+			console.log(projectSupplies);
+			res.render("showsupplies", {supplies: projectSupplies});
+		}
+	})
+})
+
+// ***** Show project pictures
+app.get('/showprojectpictures/:id', function(req, res) {
+	console.log("******************* showing pictures")
+	var projectId = req.params.id;
+	var currentUserId = currentUser._id;
+
+	db.User.findById({_id: currentUserId}, function(err, user) {
+		console.log("found user: " + user);
+		if(err) {
+			console.log(err);
+			res.redirect('/');
+		} else {
+			var userprojects = user.local.userprojects;
+			console.log(userprojects);
+			var filteredObject = userprojects.filter(function(project){
+				return project._id == projectId;
+			})[0];
+			console.log("**********THe filtered object is " + filteredObject);
+			var pictures = filteredObject.pictures;
+			console.log(pictures)
+			res.render("projectpictures", {pictures: pictures})
+		
 		}
 	})
 })
@@ -167,6 +154,7 @@ app.put('/supplyadd/:id', function(req, res) {
 		supplyName: supply,
 		cost: cost
 	});
+	console.log("the new supply is " + newSupply);
 	console.log("The current project in post supplies is " + currentProject);
 	
 	db.User.findById({_id: currentUserId}, function(err, user) {
@@ -181,7 +169,7 @@ app.put('/supplyadd/:id', function(req, res) {
 				return project._id == projectId;
 			})[0];
 			console.log("**********THe filtered object is " + filteredObject);
-			//filteredObject.supplies.push(updatedCost);
+			filteredObject.supplies.push(newSupply);
 			
 			user.save(function (err, project) {
 	            if (err) {
@@ -200,10 +188,11 @@ app.put('/supplyadd/:id', function(req, res) {
 // ***** Search flickr********
 //********************************
 app.get("/flicksearch", function(req, res) {
-	res.render("flicksearch");
+	res.render("picturesearch");
 });
 
 app.get('/flickresults', function(req, res) {
+	console.log("the flickr api key is " + flickApiKey)
 	var photoResults = [];
 	console.log(req.body);
 	var searchTerm = req.query.search;
@@ -256,20 +245,23 @@ app.get('/yelpsearch', function(req, res) {
 });
 
 app.get('/yelpresults', function(req, res) {
+	var searchTerm = req.query.search;
+	var location = req.query.location;
+	console.log("the search term is " + searchTerm);
+	console.log("the location is " + location);
 	var yelpResultsParse;
-	var yelpSecretKey;
 
 	businessResults = [];
 	var yelpBusinesses = [];
 	console.log("getting yelp results");
 
  
-  yelp.accessToken(yelpCredentials.clientId, yelpCredentials.clientSecret).then(response => {
+  yelp.accessToken(yelpClientId, yelpSecretKey).then(response => {
   const client = yelp.client(response.jsonBody.access_token);
 
   client.search({
-    term:'Starbucks',
-    location: 'san francisco, ca'
+    term: searchTerm,
+    location: location
   	}).then(response => {
   		var yelpResponseBody = response.body;
   		
@@ -321,6 +313,13 @@ function yelpParse(yelpResults) {
 	return yelpResultsArray;
 	//console.log(yelpResults);
 }
+
+app.get("/savecontractor", function(req, res) {
+	currentUser = req.user;
+	var currentUserId = currentUser._id;
+	console.log("The current user is " + currentUser);
+	res.render("savecontractor");
+})
 
 // ******** Get all projects for user ********/
 
@@ -416,12 +415,14 @@ app.get("/addpicturestoproject/:id", function(req, res) {
 			var filteredObject = userPosts.filter(function(project){
 				return project._id == projectId;
 			})[0];
-			res.render("flicksearch", {project: filteredObject});
+			currentProject = projectId;
+			res.render("picturesearch", {project: filteredObject});
 			
 		
 		}
 	})
 })
+
 
 app.put("/editproject/:id", userAuth.authorized, function(req, res) {
 	console.log("*****************updating project" );
@@ -460,7 +461,8 @@ app.put("/editproject/:id", userAuth.authorized, function(req, res) {
 // Add picture to database
 
 app.post("/addpicture", function(req, res) {
-	var pictureURL = req.body.name;
+	var pictureURL = req.body.url;
+	console.log(pictureURL);
 	var currentUserId = currentUser._id;
 	var newPicture = new db.Picture({
 		url: pictureURL 
@@ -472,16 +474,21 @@ app.post("/addpicture", function(req, res) {
 			console.log(err);
 			res.redirect('/');
 		} else {
-			var userphotos = user.local.userprojects.pictures;
+			var userPosts = user.local.userprojects;
+			var filteredObject = userPosts.filter(function(project){
+				return project._id == currentProject;
+			})[0];
+			console.log(user.local)
+			var userphotos = filteredObject.pictures;
 			console.log("******* The user photos are " + userphotos);
-			//userphotos.push(newPicture);
+			userphotos.push(newPicture);
 			
 			user.save(function (err, project) {
 	            if (err) {
 	                console.log(err)
 	            } else {
-
-	            	res.redirect("/");
+	            
+	            	res.json(newPicture);
 	            }
         	});
 		
