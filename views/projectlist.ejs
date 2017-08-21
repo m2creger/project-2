@@ -12,11 +12,11 @@
             <div class="card-block">
               <h4 class="card-title"><%= posts[i].newIdea %></h4>
               <a href="/editproject/<%= posts[i]._id %>" class="btn btn-primary">Edit Project</a>
-              <a href="/showsupplies/<%= posts[i]._id %>" class="btn btn-primary">Show Supplies</a>
-              <a href="/showprojectpictures/<%= posts[i]._id %>" class="btn btn-primary">Show Project Ideas</a>
+              <a href="/showsupplies/<%= posts[i]._id %>" class="btn btn-info">Show Supplies</a>
+              <a href="/showprojectpictures/<%= posts[i]._id %>" class="btn btn-default">Show Project Ideas</a>
               <a href="/addpicturestoproject/<%= posts[i]._id %>" class="btn btn-primary">Look for ideas</a>
               <form action="/deleteproject/<%= posts[i]._id %>?_method=DELETE" method="POST">
-                <button class="">Delete</div></button>
+                <button class="btn btn-danger">Delete</div></button>
               </form>
             </div>
           </div>

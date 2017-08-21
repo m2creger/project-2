@@ -10,7 +10,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var request = require('request');
-var flickr = require('./env.js');
 var yelpCredentials = require('./envzillow.js');
 var methodOverride = require("method-override");
 var yelp = require("yelp-fusion");
@@ -199,7 +198,7 @@ app.get('/flickresults', function(req, res) {
 	if (searchTerm) {
 			searchTerm = searchTerm.replace(" ", "+");
 			console.log(searchTerm);
-			var url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + flickr.apiKey + "&text=" + searchTerm +"&format=json&nojsoncallback=1";
+			var url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + flickApiKey + "&text=" + searchTerm +"&format=json&nojsoncallback=1";
 			request(url, function(error, response, body) {
 				console.log("The flickr results body is " + body);
 				if(error) {
