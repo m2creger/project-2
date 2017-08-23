@@ -13,3 +13,7 @@ h2 {
 .sectionTitles {
 	color: #C2185B;
 }
+
+.btn-group-vertical {
+	padding: 10px;
+}

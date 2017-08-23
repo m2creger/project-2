@@ -8,6 +8,9 @@ var passport = require("passport");
 var usersController = require('../controllers/users');
 var staticsController = require('../controllers/statics');
 var projectController = require('../controllers/project');
+var yelpController = require('../controllers/yelp');
+var suppliesController = require('../controllers/supplies');
+var flickrController = require('../controllers/flickr');
 
 function authenticatedUser(req, res, next) {
     // If the user is authenticated, then we continue the execution
@@ -34,6 +37,9 @@ router.route("/authorized")
 	.get(authenticatedUser, usersController.authorized)
 
 // router.route('/showsupplies/:id')
-//   .get(projectController.getSupplies)
+//   .get(suppliesController.getSupplies)
+
+
+
 
 module.exports = router;

@@ -69,21 +69,26 @@ app.get('/newproject', userAuth.authorized, function(req, res) {
 
 // ** add supplies to project ******
 app.get('/addsupplies/:id', function(req, res) {
+	// Get current user id
 	var currentUserId = currentUser._id;
 	var projectId = req.params.id;
 	console.log("The current project is " + currentProject);
+
+	// Find user by id
 	db.User.findById({_id: currentUserId}, function(err, user) {
 		console.log("found user: " + user);
 		if(err) {
 			console.log(err);
 		} else {
+			// Get all of user projects
 			var userprojects = user.local.userprojects;
 			console.log(userprojects);
+			// find project that matches the project id
 			var filteredObject = userprojects.filter(function(project){
 				return project._id == projectId;
 			})[0];
 			console.log("**********THe filtered object in add supplies is " + filteredObject);
-			
+			// Show supplies page
 			res.render("addsupplies", {project: filteredObject} );
 		}
 	})
@@ -92,16 +97,21 @@ app.get('/addsupplies/:id', function(req, res) {
 // Show supplies on the project
 
 app.get('/showsupplies/:id', function(req, res) {
+	// Get user id
 	var currentUserId = currentUser._id;
 	var projectId = req.params.id;
 	console.log("The current project is " + currentProject);
+	// Find user by id
 	db.User.findById({_id: currentUserId}, function(err, user) {
 		console.log("found user: " + user);
 		if(err) {
 			console.log(err);
 		} else {
+			// find all of the user projects
 			var userprojects = user.local.userprojects;
 			console.log("The user's current projects supplies are " + userprojects.supplies);
+
+			// find project that matches the project id
 			var filteredObject = userprojects.filter(function(project){
 				return project._id == projectId;
 			})[0];
@@ -109,6 +119,7 @@ app.get('/showsupplies/:id', function(req, res) {
 			var projectSupplies = filteredObject.supplies;
 			console.log("************Showing supplies");
 			console.log(projectSupplies);
+			// Show the project supplies
 			res.render("showsupplies", {supplies: projectSupplies});
 		}
 	})
@@ -117,23 +128,27 @@ app.get('/showsupplies/:id', function(req, res) {
 // ***** Show project pictures
 app.get('/showprojectpictures/:id', function(req, res) {
 	console.log("******************* showing pictures")
+	// Get project id and current id
 	var projectId = req.params.id;
 	var currentUserId = currentUser._id;
-
+	// Find user by current id
 	db.User.findById({_id: currentUserId}, function(err, user) {
 		console.log("found user: " + user);
 		if(err) {
 			console.log(err);
 			res.redirect('/');
 		} else {
+			// get all user projects
 			var userprojects = user.local.userprojects;
 			console.log(userprojects);
+			// find project that matches current projects id
 			var filteredObject = userprojects.filter(function(project){
 				return project._id == projectId;
 			})[0];
 			console.log("**********THe filtered object is " + filteredObject);
 			var pictures = filteredObject.pictures;
 			console.log(pictures)
+			// show current projects pictures
 			res.render("projectpictures", {pictures: pictures})
 		
 		}
@@ -142,13 +157,18 @@ app.get('/showprojectpictures/:id', function(req, res) {
 
 // ****Post supplies to project *****/
 app.put('/supplyadd/:id', function(req, res) {
+	// get current projects id
 	var projectId = req.params.id;
 	console.log("The project id is " + projectId);
+	// get current users id
 	var currentUserId = currentUser._id;
+	// supplies user added
 	var supply = req.body.supplies;
 	console.log("The supply is " + supply);
+	// cost user added
 	var cost = req.body.cost;
 	console.log("The supply cost is " + cost);
+	// Create new supply
 	var newSupply = new db.Supply ({
 		supplyName: supply,
 		cost: cost
@@ -156,20 +176,25 @@ app.put('/supplyadd/:id', function(req, res) {
 	console.log("the new supply is " + newSupply);
 	console.log("The current project in post supplies is " + currentProject);
 	
+	// Find user by id
 	db.User.findById({_id: currentUserId}, function(err, user) {
 		console.log("found user: " + user);
 		if(err) {
 			console.log(err);
 			res.redirect('/');
 		} else {
+
+			// Get all the user projects
 			var userprojects = user.local.userprojects;
 			console.log(userprojects);
+			// look for project that matches id
 			var filteredObject = userprojects.filter(function(project){
 				return project._id == projectId;
 			})[0];
 			console.log("**********THe filtered object is " + filteredObject);
+			// Add supply to supplies
 			filteredObject.supplies.push(newSupply);
-			
+			// save supply to current project
 			user.save(function (err, project) {
 	            if (err) {
 	                console.log(err)
@@ -195,6 +220,7 @@ app.get('/flickresults', function(req, res) {
 	var photoResults = [];
 	console.log(req.body);
 	var searchTerm = req.query.search;
+	// search if the user put in a search term
 	if (searchTerm) {
 			searchTerm = searchTerm.replace(" ", "+");
 			console.log(searchTerm);
@@ -216,14 +242,14 @@ app.get('/flickresults', function(req, res) {
 							var server = picture.server;
 							var photoID = picture.id;
 							var secret = picture.secret;
-							
+							// construct url
 							var newPhotoURL = "https://farm" + farm + "." + "staticflickr.com/" + server+ "/" + photoID + "_"  + secret + ".jpg";
 							
 							photoResults.push(newPhotoURL);
 							
 						});
 						
-						res.render("flickresults", {photoResults: photoResults});
+						res.render("flickresults", {photoResults: photoResults, project: currentProject});
 						
 						photoResults.length = 0;
 						
@@ -244,6 +270,7 @@ app.get('/yelpsearch', function(req, res) {
 });
 
 app.get('/yelpresults', function(req, res) {
+	// get the results from user input
 	var searchTerm = req.query.search;
 	var location = req.query.location;
 	console.log("the search term is " + searchTerm);
@@ -257,7 +284,7 @@ app.get('/yelpresults', function(req, res) {
  
   yelp.accessToken(yelpClientId, yelpSecretKey).then(response => {
   const client = yelp.client(response.jsonBody.access_token);
-
+  // Search yelp
   client.search({
     term: searchTerm,
     location: location
@@ -282,6 +309,8 @@ app.get('/yelpresults', function(req, res) {
 		
 });
 
+// Display yelp results
+
 function yelpParse(yelpResults) {
 	var yelpResultsArray = [];
 	var yelpArray = JSON.parse(yelpResults);
@@ -296,6 +325,8 @@ function yelpParse(yelpResults) {
 		var phone = yelpBusinesses[i].phone;
 		var rating = yelpBusinesses[i].rating;
 		var imageURL = yelpBusinesses[i].image_url;
+
+		// Create new business
 		var newBusiness = {
 			name: name,
 			city: city,
@@ -312,7 +343,7 @@ function yelpParse(yelpResults) {
 	return yelpResultsArray;
 	//console.log(yelpResults);
 }
-
+// Still working on this item
 app.get("/savecontractor", function(req, res) {
 	currentUser = req.user;
 	var currentUserId = currentUser._id;
@@ -335,6 +366,7 @@ app.get("/projects", userAuth.authorized, function(req, res) {
 		} else {
 			var userPosts = user.local.userprojects;
 			console.log("The user posts are " + userPosts);
+			console.log(userPosts.pictures);
 			
 			res.render("projectlist", {posts: userPosts} );
 		}
@@ -402,7 +434,7 @@ app.get("/addpicturestoproject/:id", function(req, res) {
 	var currentUserId = currentUser._id;
 	console.log("**************Editing project");
 	var projectId = req.params.id;
-
+	currentProject = projectId;
 	console.log("The id of the current project being edited is " + currentProject);
 	db.User.findById({_id: currentUserId}, function(err, user) {
 		console.log("found user: " + user);
@@ -414,8 +446,8 @@ app.get("/addpicturestoproject/:id", function(req, res) {
 			var filteredObject = userPosts.filter(function(project){
 				return project._id == projectId;
 			})[0];
-			currentProject = projectId;
-			res.render("picturesearch", {project: filteredObject});
+			
+			res.render("picturesearch", {project: currentProject});
 			
 		
 		}
@@ -480,6 +512,7 @@ app.post("/addpicture", function(req, res) {
 			console.log(user.local)
 			var userphotos = filteredObject.pictures;
 			console.log("******* The user photos are " + userphotos);
+			// Add pictures to project
 			userphotos.push(newPicture);
 			
 			user.save(function (err, project) {

@@ -1,8 +1,12 @@
 <% include ./partials/header.ejs %>
 
-<h4>Flickr Results</h4>
+
 
 <div class="container-fluid">
+	<h4>Flickr Results</h4>
+	<% if(project) { %>
+		<h4>Click picture to add to project</h4>
+	<% } %>
   <div class="row">
   	<% for(var i = 0; i < photoResults.length; i++) { %>
      

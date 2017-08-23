@@ -10,14 +10,20 @@
           <div class="col-sm-6 col-md-6 col-lg-6">
           <div class="card text-center" style="width: 20rem;">
             <div class="card-block">
+              <% if(posts.pictures) { %>
+                <img class="card-img-top" src="<%= posts.pictures[0] %>" alt="Card image cap">
+                <% }  %>
               <h4 class="card-title"><%= posts[i].newIdea %></h4>
-              <a href="/editproject/<%= posts[i]._id %>" class="btn btn-primary">Edit Project</a>
-              <a href="/showsupplies/<%= posts[i]._id %>" class="btn btn-info">Show Supplies</a>
-              <a href="/showprojectpictures/<%= posts[i]._id %>" class="btn btn-default">Show Project Ideas</a>
-              <a href="/addpicturestoproject/<%= posts[i]._id %>" class="btn btn-primary">Look for ideas</a>
-              <form action="/deleteproject/<%= posts[i]._id %>?_method=DELETE" method="POST">
-                <button class="btn btn-danger">Delete</div></button>
-              </form>
+              <div class="btn-group-vertical">
+                <a href="/editproject/<%= posts[i]._id %>" class="btn btn-success">Edit Project</a>
+                <a href="/showsupplies/<%= posts[i]._id %>" class="btn btn-info">Show Supplies</a>
+                <a href="/showprojectpictures/<%= posts[i]._id %>" class="btn btn-default">Show Project Ideas</a>
+                <a href="/addpicturestoproject/<%= posts[i]._id %>" class="btn btn-primary">Look for ideas</a>
+                <a href="/yelpsearch" class="btn btn-success">Find a contractor</a>
+                <form action="/deleteproject/<%= posts[i]._id %>?_method=DELETE" method="POST">
+                  <button class="btn btn-danger">Delete</div></button>
+                </form>
+              </div>
             </div>
           </div>
           </div>
