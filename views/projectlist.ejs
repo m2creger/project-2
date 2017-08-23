@@ -10,9 +10,9 @@
           <div class="col-sm-6 col-md-6 col-lg-6">
           <div class="card text-center" style="width: 20rem;">
             <div class="card-block">
-              <% if(posts.pictures) { %>
-                <img class="card-img-top" src="<%= posts.pictures[0] %>" alt="Card image cap">
-                <% }  %>
+              <% if(posts[i].pictures) { %>
+                <img class="card-img-top" src="<%= posts[i].pictures[0] %>">
+              <% }  %>
               <h4 class="card-title"><%= posts[i].newIdea %></h4>
               <div class="btn-group-vertical">
                 <a href="/editproject/<%= posts[i]._id %>" class="btn btn-success">Edit Project</a>

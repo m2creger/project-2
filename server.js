@@ -366,7 +366,6 @@ app.get("/projects", userAuth.authorized, function(req, res) {
 		} else {
 			var userPosts = user.local.userprojects;
 			console.log("The user posts are " + userPosts);
-			console.log(userPosts.pictures);
 			
 			res.render("projectlist", {posts: userPosts} );
 		}
