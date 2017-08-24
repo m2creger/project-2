@@ -554,7 +554,7 @@ app.delete("/deleteproject/:id", function(req, res) {
 	                console.log(err)
 	            } else {
 
-	            	res.redirect("/");
+	            	res.redirect("/projects");
 	            }
         	});
 		
