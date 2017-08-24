@@ -395,7 +395,7 @@ app.post('/projects', userAuth.authorized, function(req, res) {
 			currentProject = newProjectIdea._id;
 			console.log("The current project is " + currentProject);
 			user.save();
-			res.render("projectdetails");
+			res.redirect("/projects");
 		}
 	})
 
